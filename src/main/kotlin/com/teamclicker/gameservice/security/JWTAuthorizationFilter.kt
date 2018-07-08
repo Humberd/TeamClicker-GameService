@@ -47,10 +47,6 @@ class JWTAuthorizationFilter(
         val jwtData = claimsToJWTDataMapper.parse(jwtClaims)
 
         return JWTAuthenticationToken(jwtData)
-
-//        return if (user !== null) {
-//            JWTAuthenticationToken(user, null, ArrayList<GrantedAuthority>())
-//        } else null
     }
 
     companion object : KLogging()

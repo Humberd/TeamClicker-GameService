@@ -42,7 +42,7 @@ class SwaggerBean {
 
         // TODO: change to a proper data
         val DEFAULT_API_INFO = ApiInfoBuilder()
-            .title("Team Clicker Auth Service")
+            .title("Team Clicker Game Service")
             .description("REST API Service responsible for authorizing users")
             .license("Apache 2.0")
             .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0")
