@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:10-alpine
+    ports:
+      - "5442:5432"
+    environment:
+      POSTGRES_DB: auth-service-tests
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: admin123
+    networks:
+      - jenkins
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "32772:32768"
+      - "9102:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100 #TODO change ip
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  jenkins:
+    external:
+      name: jenkins
