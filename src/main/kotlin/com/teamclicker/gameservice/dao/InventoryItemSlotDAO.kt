@@ -1,8 +1,8 @@
 package com.teamclicker.gameservice.dao
 
-class InventoryItemSlot {
+class InventoryItemSlotDAO {
     var id: Long = 0
 
     var quantity: Int = 1
-    lateinit var item: Item
+    lateinit var item: ItemTemplate
 }

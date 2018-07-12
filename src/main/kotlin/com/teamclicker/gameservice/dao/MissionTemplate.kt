@@ -1,5 +1,5 @@
 package com.teamclicker.gameservice.dao
 
-class Item {
+class MissionTemplate {
 
 }

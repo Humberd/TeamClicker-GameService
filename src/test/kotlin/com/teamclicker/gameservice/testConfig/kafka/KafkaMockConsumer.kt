@@ -47,7 +47,7 @@ class KafkaMockConsumer(
                     assignments: MutableMap<TopicPartition, Long>,
                     callback: ConsumerSeekAware.ConsumerSeekCallback
                 ) {
-                    assignments.forEach { t, o -> callback.seekToEnd(t.topic(), t.partition()) }
+                    assignments.forEach { t, _ -> callback.seekToEnd(t.topic(), t.partition()) }
                 }
 
                 override fun registerSeekCallback(callback: ConsumerSeekAware.ConsumerSeekCallback?) {
