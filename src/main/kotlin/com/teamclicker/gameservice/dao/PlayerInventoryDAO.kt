@@ -1,7 +1,16 @@
 package com.teamclicker.gameservice.dao
 
+import javax.persistence.*
+
+@Entity
+@Table(name = "PlayerInventory")
 class PlayerInventoryDAO {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 
-    var itemListDAO: ArrayList<InventoryItemSlotDAO> = arrayListOf()
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name= "playerInventoryId")
+    var itemListDAO: List<InventoryItemSlotDAO> = arrayListOf()
 }
