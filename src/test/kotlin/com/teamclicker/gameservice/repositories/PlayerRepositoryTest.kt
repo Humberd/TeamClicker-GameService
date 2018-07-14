@@ -21,7 +21,7 @@ internal class PlayerRepositoryTest {
             it.stats = PlayerStatsDAO()
             it.equipment = PlayerEquipmentDAO.create()
             it.inventory = PlayerInventoryDAO().also {
-                it.itemListDAO = listOf(
+                it.itemList = listOf(
                     InventoryItemSlotDAO().also {
                         it.count = 2
                     },
@@ -30,6 +30,18 @@ internal class PlayerRepositoryTest {
             }
         }
         playerRepository.save(player)
+
+        val player2 = PlayerDAO().also {pl ->
+            pl.stats = PlayerStatsDAO()
+            pl.equipment = PlayerEquipmentDAO.create()
+            pl.inventory = PlayerInventoryDAO()
+            pl.friendList = listOf(FriendshipDAO().also {
+                it.owner = pl
+                it.friend = player
+            })
+        }
+
+        playerRepository.save(player2)
 
     }
 

@@ -29,7 +29,9 @@ class PlayerDAO {
     @JoinColumn(name = "inventoryId", nullable = false)
     lateinit var inventory: PlayerInventoryDAO
 
-//    var friendList: ArrayList<FriendshipDAO> = arrayListOf()
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "ownerId", nullable = false)
+    var friendList: List<FriendshipDAO> = arrayListOf()
 //    /* Friend requests the player had received */
 //    var friendRequestList: ArrayList<FriendRequestDAO> = arrayListOf()
 //    /* Friend requests the player had sent */

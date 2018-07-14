@@ -12,5 +12,5 @@ class PlayerInventoryDAO {
 
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name= "playerInventoryId")
-    var itemListDAO: List<InventoryItemSlotDAO> = arrayListOf()
+    var itemList: List<InventoryItemSlotDAO> = arrayListOf()
 }
