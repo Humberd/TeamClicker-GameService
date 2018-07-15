@@ -1,16 +1,28 @@
 package com.teamclicker.gameservice.dao
 
-import java.util.*
+import org.hibernate.annotations.CreationTimestamp
+import java.io.Serializable
+import java.time.LocalDateTime
+import javax.persistence.*
 
-class FriendRequestDAO {
-    var id: Long = 0
+@Entity
+@Table(name = "FriendRequest")
+class FriendRequestDAO : Serializable{
+    @field:CreationTimestamp
+    @Column(name = "createdAt", nullable = false, updatable = false)
+    lateinit var createdAt: LocalDateTime
 
-    lateinit var createdAt: Date
+    @Column(name = "completedAt")
+    var completedAt: LocalDateTime? = null
 
-    var completedAt: Date? = null
-
+    @Id
+    @ManyToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "senderId", nullable = false)
     lateinit var sender: PlayerDAO
 
+    @Id
+    @ManyToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "receiverId", nullable = false)
     lateinit var receiver: PlayerDAO
 
     fun isCompleted() = completedAt !== null

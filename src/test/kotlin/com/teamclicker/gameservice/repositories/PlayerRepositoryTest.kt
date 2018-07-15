@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import javax.transaction.Transactional
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,7 +32,7 @@ internal class PlayerRepositoryTest {
         }
         playerRepository.save(player)
 
-        val player2 = PlayerDAO().also {pl ->
+        val player2 = PlayerDAO().also { pl ->
             pl.stats = PlayerStatsDAO()
             pl.equipment = PlayerEquipmentDAO.create()
             pl.inventory = PlayerInventoryDAO()
@@ -39,6 +40,12 @@ internal class PlayerRepositoryTest {
                 it.owner = pl
                 it.friend = player
             })
+            pl.friendRequestList = listOf(
+                FriendRequestDAO().also {
+                    it.sender = pl
+                    it.receiver = player
+                }
+            )
         }
 
         playerRepository.save(player2)
@@ -46,9 +53,11 @@ internal class PlayerRepositoryTest {
     }
 
     @Test
+    @Transactional
     fun `should foo1`() {
         val players = playerRepository.findAll()
-        logger.info { players }
+        players.map { it.friendList }
+            .forEach { logger.info { it }}
     }
 
     @Test
@@ -56,5 +65,5 @@ internal class PlayerRepositoryTest {
         playerRepository.deleteAll()
     }
 
-    companion object: KLogging()
+    companion object : KLogging()
 }

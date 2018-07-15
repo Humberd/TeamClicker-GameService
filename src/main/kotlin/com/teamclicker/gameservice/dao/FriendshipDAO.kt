@@ -9,7 +9,7 @@ import javax.persistence.*
 @Table(name = "Friendship")
 class FriendshipDAO : Serializable {
     @field:CreationTimestamp
-    @Column(name = "createdAt")
+    @Column(name = "createdAt", nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime
 
     @Id

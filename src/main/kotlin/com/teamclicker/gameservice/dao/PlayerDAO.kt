@@ -3,6 +3,7 @@ package com.teamclicker.gameservice.dao
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
+import javax.transaction.Transactional
 
 @Entity
 @Table(name = "Player")
@@ -16,7 +17,7 @@ class PlayerDAO {
     var accountId: Long = 0
 
     @field:CreationTimestamp
-    @Column(name = "createdAt")
+    @Column(name = "createdAt", nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime
 
     @Column(name = "status", nullable = false)
@@ -35,10 +36,23 @@ class PlayerDAO {
     @JoinColumn(name = "inventoryId", nullable = false)
     lateinit var inventory: PlayerInventoryDAO
 
-    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "owner")
+    @OneToMany(
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        mappedBy = "owner"
+    )
     var friendList: List<FriendshipDAO> = arrayListOf()
-//    /* Friend requests the player had received */
-//    var friendRequestList: ArrayList<FriendRequestDAO> = arrayListOf()
-//    /* Friend requests the player had sent */
-//    var friendRequestSentList: ArrayList<FriendRequestDAO> = arrayListOf()
+    /* Friend requests the player had received */
+    @OneToMany(
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        mappedBy = "receiver"
+    )
+    var friendRequestList: List<FriendRequestDAO> = arrayListOf()
+    /* Friend requests the player had sent */
+    @OneToMany(
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        mappedBy = "sender"
+    )var friendRequestSentList: List<FriendRequestDAO> = arrayListOf()
 }
