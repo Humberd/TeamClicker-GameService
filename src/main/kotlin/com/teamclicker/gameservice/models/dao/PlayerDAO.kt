@@ -1,9 +1,8 @@
-package com.teamclicker.gameservice.dao
+package com.teamclicker.gameservice.models.dao
 
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
-import javax.transaction.Transactional
 
 @Entity
 @Table(name = "Player")
@@ -22,7 +21,8 @@ class PlayerDAO {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    var status: PlayerStatus = PlayerStatus.OFFLINE
+    var status: PlayerStatus =
+        PlayerStatus.OFFLINE
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "statsId", nullable = false)

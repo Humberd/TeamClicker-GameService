@@ -1,5 +1,7 @@
-package com.teamclicker.gameservice.dao
+package com.teamclicker.gameservice.models.dao
 
+import com.teamclicker.gameservice.models.templates.ItemTemplate
+import com.teamclicker.gameservice.models.templates.getItem
 import javax.persistence.*
 
 @Entity
@@ -17,7 +19,7 @@ class InventoryItemSlotDAO {
     var itemId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playerInventoryId", insertable=false, updatable=false)
+    @JoinColumn(name = "playerInventoryId", insertable = false, updatable = false)
     lateinit var playerInventory: PlayerInventoryDAO
 
     @Transient

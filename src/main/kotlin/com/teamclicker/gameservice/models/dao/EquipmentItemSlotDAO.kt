@@ -1,5 +1,7 @@
-package com.teamclicker.gameservice.dao
+package com.teamclicker.gameservice.models.dao
 
+import com.teamclicker.gameservice.models.templates.ItemTemplate
+import com.teamclicker.gameservice.models.templates.getItem
 import mu.KLogging
 import javax.persistence.*
 
@@ -41,13 +43,4 @@ class EquipmentItemSlotDAO {
     }
 
     companion object : KLogging()
-}
-
-fun getItem(itemId: Long): ItemTemplate {
-    return ItemTemplate().also {
-        it.id = itemId
-        it.name = "Mega Shield"
-        it.atk = 5
-        it.def = 10
-    }
 }

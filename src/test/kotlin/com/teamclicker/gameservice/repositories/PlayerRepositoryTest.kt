@@ -1,6 +1,6 @@
 package com.teamclicker.gameservice.repositories
 
-import com.teamclicker.gameservice.dao.*
+import com.teamclicker.gameservice.models.dao.*
 import mu.KLogging
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

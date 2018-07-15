@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.dao
+package com.teamclicker.gameservice.models.dao
 
 import javax.persistence.*
 
