@@ -1,7 +1,7 @@
 package com.teamclicker.gameservice.dao
 
 import org.hibernate.annotations.CreationTimestamp
-import java.util.*
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -15,10 +15,9 @@ class PlayerDAO {
     @Column(name = "accountId", nullable = false)
     var accountId: Long = 0
 
-    @CreationTimestamp
-    @Column(name = "createdAt", nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    lateinit var createdAt: Date
+    @field:CreationTimestamp
+    @Column(name = "createdAt")
+    lateinit var createdAt: LocalDateTime
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -36,7 +35,7 @@ class PlayerDAO {
     @JoinColumn(name = "inventoryId", nullable = false)
     lateinit var inventory: PlayerInventoryDAO
 
-    @OneToMany(cascade = [CascadeType.ALL],orphanRemoval = true, mappedBy = "owner")
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "owner")
     var friendList: List<FriendshipDAO> = arrayListOf()
 //    /* Friend requests the player had received */
 //    var friendRequestList: ArrayList<FriendRequestDAO> = arrayListOf()
