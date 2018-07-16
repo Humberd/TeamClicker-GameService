@@ -15,8 +15,8 @@ class PlayerDAO {
     @Column(name = "accountId", nullable = false)
     var accountId: Long = 0
 
-    @Column(name = "username", nullable = false)
-    lateinit var username: String
+    @Column(name = "name", nullable = false)
+    lateinit var name: String
 
     @field:CreationTimestamp
     @Column(name = "createdAt", nullable = false, updatable = false)
