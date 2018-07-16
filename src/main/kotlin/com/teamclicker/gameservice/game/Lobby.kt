@@ -5,9 +5,14 @@ import com.teamclicker.gameservice.game.LobbyStatus.PRIVATE
 import com.teamclicker.gameservice.game.LobbyStatus.PUBLIC
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 
-class Lobby(settings: LobbySettings) {
+class Lobby(
+    settings: LobbySettings,
+    initialHost: PlayerDAO
+) {
     internal val settings = settings.copy()
-    private val _playersMap = HashMap<Long, LobbyPlayer>()
+    private val _playersMap = hashMapOf(
+        initialHost.id to LobbyPlayer.from(initialHost, HOST, this)
+    )
 
     val playersMap: HashMap<Long, LobbyPlayer>
         get() {
