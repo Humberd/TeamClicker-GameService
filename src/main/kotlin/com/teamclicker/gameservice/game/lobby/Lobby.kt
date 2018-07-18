@@ -1,8 +1,8 @@
-package com.teamclicker.gameservice.game
+package com.teamclicker.gameservice.game.lobby
 
-import com.teamclicker.gameservice.game.LobbyPlayerStatus.*
-import com.teamclicker.gameservice.game.LobbyStatus.PRIVATE
-import com.teamclicker.gameservice.game.LobbyStatus.PUBLIC
+import com.teamclicker.gameservice.game.lobby.LobbyPlayerStatus.*
+import com.teamclicker.gameservice.game.lobby.LobbyStatus.PRIVATE
+import com.teamclicker.gameservice.game.lobby.LobbyStatus.PUBLIC
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 
 class Lobby(

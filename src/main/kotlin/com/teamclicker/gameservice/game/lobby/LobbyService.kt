@@ -1,5 +1,6 @@
-package com.teamclicker.gameservice.game
+package com.teamclicker.gameservice.game.lobby
 
+import com.teamclicker.gameservice.models.dao.PlayerDAO
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -7,13 +8,16 @@ import org.springframework.stereotype.Service
 class LobbyService {
     private val lobbyMap = HashMap<Long, Lobby>()
 
-//    fun createLobby(): Lobby {
-//        val id = generateId()
-//        val lobby = Lobby(id)
-//
-//        lobbyMap.put(id, lobby)
-//        return lobby
-//    }
+    fun createLobby(
+        settings: LobbySettings,
+        host: PlayerDAO
+    ): Lobby {
+        val id = generateId()
+        val lobby = Lobby(settings.copy(id = id), host)
+
+        lobbyMap.put(id, lobby)
+        return lobby
+    }
 
     fun removeLobby(lobbyId: Long) {
         lobbyMap.remove(lobbyId)

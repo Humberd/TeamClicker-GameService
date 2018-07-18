@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.game
+package com.teamclicker.gameservice.game.lobby
 
 data class LobbySettings(
     val id: Long,

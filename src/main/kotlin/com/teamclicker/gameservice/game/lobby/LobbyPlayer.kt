@@ -1,6 +1,6 @@
-package com.teamclicker.gameservice.game
+package com.teamclicker.gameservice.game.lobby
 
-import com.teamclicker.gameservice.game.LobbyPlayerStatus.*
+import com.teamclicker.gameservice.game.lobby.LobbyPlayerStatus.*
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 
 class LobbyPlayer(
@@ -24,7 +24,7 @@ class LobbyPlayer(
             LEFT -> potentialPlayerInLobby.status = INVITED
         }
 
-        lobby.playersMap[123] = LobbyPlayer.from(
+        lobby.playersMap[123] = from(
             player = player,
             status = INVITED,
             lobby = lobby
@@ -102,12 +102,13 @@ class LobbyPlayer(
     }
 
     companion object {
-        fun from(player: PlayerDAO, status: LobbyPlayerStatus, lobby: Lobby) = LobbyPlayer(
-            id = player.id,
-            name = player.name,
-            level = player.stats.level,
-            status = status,
-            lobby = lobby
-        )
+        fun from(player: PlayerDAO, status: LobbyPlayerStatus, lobby: Lobby) =
+            LobbyPlayer(
+                id = player.id,
+                name = player.name,
+                level = player.stats.level,
+                status = status,
+                lobby = lobby
+            )
     }
 }
