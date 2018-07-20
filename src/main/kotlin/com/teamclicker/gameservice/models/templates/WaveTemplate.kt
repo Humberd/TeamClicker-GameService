@@ -1,5 +1,6 @@
 package com.teamclicker.gameservice.models.templates
 
-data class WaveTemplate(
-    val creatures: List<CreatureTemplate>
-)
+class WaveTemplate {
+    var id: Long = 0
+    lateinit var creatures: List<CreatureTemplate>
+}
