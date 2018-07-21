@@ -13,9 +13,9 @@ class GameManager(
     lateinit var currentWave: Wave
 
     fun startGame() {
-        require(status !== NEW) { "Cannot start. Game must be NEW." }
-        require(areAllWavesDone()) { "Cannot start. Game requires at least 1 Wave." }
-        require(players.size == 0) { "Cannot start. Game requires at least 1 Player." }
+        check(status === NEW) { "Cannot start. Game must be NEW." }
+        check(!areAllWavesDone()) { "Cannot start. Game requires at least 1 Wave." }
+        check(!players.isEmpty()) { "Cannot start. Game requires at least 1 Player." }
 
         nextWave()
         status = STARTED
@@ -26,8 +26,8 @@ class GameManager(
     }
 
     fun attack(data: AttackWTO) {
-        require(status !== STARTED) { "Cannot attack. Game not started." }
-        require(currentWave.waveId !== data.waveId) { "Cannot attack. Wave does not exist." }
+        check(status === STARTED) { "Cannot attack. Game not started." }
+        require(currentWave.waveId === data.waveId) { "Cannot attack. Wave does not exist." }
 
         getPlayer(data.playerId)
     }
