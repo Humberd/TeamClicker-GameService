@@ -15,17 +15,31 @@ internal class EventReceiverTest {
     fun `should foo`() {
         val eventReceiver = EventReceiver(1, 5, 200)
         eventReceiver.start()
+//        launch {
+//            while (true) {
+//                for (i in 1..500) {
+//                    eventReceiver.queueTask {
+//                        Array((1..10000).random()) {
+//                            Object()
+//                            it.toLong()
+//                        }
+//                    }
+//                }
+//                delay(100)
+//            }
+//        }
+
         launch {
             while (true) {
                 for (i in 1..500) {
                     eventReceiver.queueTask {
-                        Array((1..10000).random()) {
+                        Array((1..2).random()) {
                             Object()
                             it.toLong()
                         }
                     }
                 }
-                delay(100)
+                delay(1)
             }
         }
         Thread.sleep(5000000)
