@@ -8,28 +8,37 @@ import kotlin.system.measureTimeMillis
 abstract class AbstractTaskWorker(
     name: String,
     fps: Int,
-    loadBufferSize: Int
+    loadBufferCapacity: Int
 ): Thread(name) {
     internal val tickRate: Long
     @Volatile
     var isRunning = true
     /**
-     * Array of n recent load values expressed in percents
-     * When execution time = 0ms then entity is 0
-     * When execution time = the tickRate value then entity is 1
-     * When execution time > the tickRate value then entity is > 1
+     * Recent execution times expressed in percents
+     * 0 = 0%
+     * 1 = 100%,
+     * where 100% is the [tickRate]
      */
     internal val recentLoadBuffer: Array<Float>
-    internal var loopCounter: Long = 0
+    internal var loopCounter: Long = -1
 
+    /**
+     * The list of tasks that are queued to be executed in the next tick.
+     * After execution the tasks are removed.
+     */
     internal var taskQueue = arrayListOf<() -> Unit>()
+    /**
+     * The list of tasks that are queued to be executed every tick.
+     * After execution the tasks are NOT removed.
+     */
+    internal var everyTickTaskQueue = arrayListOf<() -> Unit>()
 
     init {
         require(fps > 0) { "fps must be greater than 0, but is $fps" }
         tickRate = 1000L / fps
 
-        require(loadBufferSize > 0) { "loadBufferSize must be greater than 0, but is $loadBufferSize" }
-        recentLoadBuffer = Array(loadBufferSize) { 0f }
+        require(loadBufferCapacity > 0) { "loadBufferCapacity must be greater than 0, but is $loadBufferCapacity" }
+        recentLoadBuffer = Array(loadBufferCapacity) { 0f }
 
         isDaemon = true
     }
@@ -38,33 +47,38 @@ abstract class AbstractTaskWorker(
         while (isRunning) {
             loopCounter++
             val executionTime = measureTimeMillis {
-                if (taskQueue.isEmpty()) {
-                    return@measureTimeMillis
-                }
                 val tasks = taskQueue.toList()
                 taskQueue = ArrayList(taskQueue.drop(tasks.size))
 
                 executeTasks(tasks)
+                executeTasks(everyTickTaskQueue.toList())
             }
             /* When tasks take a bit more time to execute
              * we don't want to wait another full frame.
               * We instead would assume that a portion of the sleep time
               * has already been consumed by the execution time*/
             val sleepTime = tickRate - executionTime
-            saveLoadEntity(executionTime)
+            saveExecutionTime(executionTime)
             /* We don't want to sleep when there is no time for it */
             if (sleepTime <= 0L) {
                 logger.trace { "[${loopCounter}] Execution time took ${executionTime}ms. Average load: ${countAverageLoad()}%. No time to sleep" }
                 continue
             }
             logger.trace { "[${loopCounter}] Execution time took ${executionTime}ms. Average load: ${countAverageLoad()}%. Sleeping for ${sleepTime}ms..." }
-            sleep(sleepTime)
+            goSleep(sleepTime)
         }
     }
 
+    open internal fun goSleep(time: Long) = sleep(time)
+
     fun queueTask(task: () -> Unit) = taskQueue.add(task)
 
-    fun countAverageLoad() = (recentLoadBuffer.average() * 100).round(2)
+    fun queueTaskEveryTick(task: () -> Unit) = everyTickTaskQueue.add(task)
+
+    /**
+     * Count average load and rounds it to 2 decimal places
+     */
+    fun countAverageLoad() = recentLoadBuffer.average().round(2).toFloat()
 
     internal fun executeTasks(tasks: List<() -> Unit>) {
         for (task in tasks) {
@@ -72,7 +86,11 @@ abstract class AbstractTaskWorker(
         }
     }
 
-    internal fun saveLoadEntity(executionTime: Long) {
+    /**
+     * Saves execution time as a percent of the tick rate
+     * in the next position of the array
+     */
+    open internal fun saveExecutionTime(executionTime: Long) {
         require(executionTime >= 0) { "Execution time cannot be < than 0" }
         val index = (loopCounter % recentLoadBuffer.size).toInt()
         recentLoadBuffer[index] = executionTime.toFloat() / tickRate

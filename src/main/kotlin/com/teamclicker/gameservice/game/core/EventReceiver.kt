@@ -10,4 +10,8 @@ class EventReceiver(
     "EventReceiver-$threadId",
     fps,
     loadBufferSize
-)
+) {
+    companion object {
+        var counter = 0
+    }
+}

@@ -57,28 +57,28 @@ internal class EventReceiverTest {
 
         @Test
         fun `should save 0 value when executionTime was 0`() {
-            eventReceiver.saveLoadEntity(0)
+            eventReceiver.saveExecutionTime(0)
 
             assertEquals(0f, eventReceiver.recentLoadBuffer[0])
         }
 
         @Test
         fun `should save (0,1) value when executionTime was (0, tickRate)`() {
-            eventReceiver.saveLoadEntity(20)
+            eventReceiver.saveExecutionTime(20)
 
             assertEquals(0.1f, eventReceiver.recentLoadBuffer[0])
         }
 
         @Test
         fun `should save 1 value when exeucutionTime was tickRate`() {
-            eventReceiver.saveLoadEntity(200)
+            eventReceiver.saveExecutionTime(200)
 
             assertEquals(1f, eventReceiver.recentLoadBuffer[0])
         }
 
         @Test
         fun `should save (1, x) when executionTime was (tickRate, x)`() {
-            eventReceiver.saveLoadEntity(350)
+            eventReceiver.saveExecutionTime(350)
 
             assertEquals(1.75f, eventReceiver.recentLoadBuffer[0])
         }
@@ -86,7 +86,7 @@ internal class EventReceiverTest {
         @Test
         fun `should throw error when executionTime was less than 0`() {
             assertThrows(IllegalArgumentException::class.java) {
-                eventReceiver.saveLoadEntity(-2)
+                eventReceiver.saveExecutionTime(-2)
             }
         }
     }
