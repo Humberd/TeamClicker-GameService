@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.models.templates
+package com.teamclicker.gameservice.game.templates
 
 class ItemTemplate {
     var id: Long = 0

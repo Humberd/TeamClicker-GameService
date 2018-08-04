@@ -1,5 +1,8 @@
-package com.teamclicker.gameservice.game.lobby
+package com.teamclicker.gameservice.game.spring
 
+import com.teamclicker.gameservice.game.lobby.Lobby
+import com.teamclicker.gameservice.game.lobby.LobbyException
+import com.teamclicker.gameservice.game.lobby.LobbySettings
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 import mu.KLogging
 import org.springframework.stereotype.Service

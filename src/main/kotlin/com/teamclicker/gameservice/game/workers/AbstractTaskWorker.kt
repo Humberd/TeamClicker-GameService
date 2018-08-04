@@ -3,13 +3,16 @@ package com.teamclicker.gameservice.game.workers
 import ch.qos.logback.classic.Level
 import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.extensions.round
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.*
+import kotlin.math.roundToLong
 import kotlin.system.measureTimeMillis
 
 abstract class AbstractTaskWorker(
     name: String,
     fps: Int,
     loadBufferCapacity: Int
-): Thread(name) {
+) : Thread(name) {
     internal val tickRate: Long
     @Volatile
     var isRunning = true
@@ -27,11 +30,12 @@ abstract class AbstractTaskWorker(
      * After execution the tasks are removed.
      */
     internal var taskQueue = arrayListOf<() -> Unit>()
+
     /**
-     * The list of tasks that are queued to be executed every tick.
+     * The list of tasks that are queued to be executed at fixed tickRate.
      * After execution the tasks are NOT removed.
      */
-    internal var everyTickTaskQueue = arrayListOf<() -> Unit>()
+    internal var fixedTickRateTaskQueue = arrayListOf<FixedRateTask>()
 
     init {
         require(fps > 0) { "fps must be greater than 0, but is $fps" }
@@ -51,7 +55,7 @@ abstract class AbstractTaskWorker(
                 taskQueue = ArrayList(taskQueue.drop(tasks.size))
 
                 executeTasks(tasks)
-                executeTasks(everyTickTaskQueue.toList())
+                executeFixedRateTasks(fixedTickRateTaskQueue.toList())
             }
             /* When tasks take a bit more time to execute
              * we don't want to wait another full frame.
@@ -73,7 +77,22 @@ abstract class AbstractTaskWorker(
 
     fun queueTask(task: () -> Unit) = taskQueue.add(task)
 
-    fun queueTaskEveryTick(task: () -> Unit) = everyTickTaskQueue.add(task)
+    fun queueTaskEveryTick(task: () -> Unit) = queueFixedRateTaskEvery(tickRate, MILLISECONDS, false, task)
+
+    fun removeTaskEveryTick(task: () -> Unit) = removeFixedRateTask(task)
+
+    fun queueFixedRateTaskEvery(time: Long, unit: TimeUnit, startImmediately: Boolean = false, task: () -> Unit) =
+        queueFixedRateTaskEvery(unit.toMillis(time), startImmediately, task)
+
+    fun queueFixedRateTaskEvery(millis: Long, startImmediately: Boolean = false, task: () -> Unit) {
+        val tickRateInterval = (millis / tickRate.toFloat()).roundToLong().coerceAtLeast(1)
+
+        fixedTickRateTaskQueue.add(
+            FixedRateTask(tickRateInterval, startImmediately, task)
+        )
+    }
+
+    fun removeFixedRateTask(task: () -> Unit) = fixedTickRateTaskQueue.removeAll { it.task === task }
 
     /**
      * Count average load and rounds it to 2 decimal places
@@ -82,7 +101,26 @@ abstract class AbstractTaskWorker(
 
     internal fun executeTasks(tasks: List<() -> Unit>) {
         for (task in tasks) {
-            task()
+            executeTask(task)
+        }
+    }
+
+    internal fun executeFixedRateTasks(tasks: List<FixedRateTask>) {
+        for (taskWrapper in tasks) {
+            taskWrapper.currentTick++
+            if (taskWrapper.currentTick < taskWrapper.tickRateInterval) {
+                continue
+            }
+            executeTask(taskWrapper.task)
+            taskWrapper.currentTick = 0
+        }
+    }
+
+    internal fun executeTask(task: () -> Unit) {
+        try {
+            task.invoke()
+        } catch (e: Exception) {
+            logger.error("Task Invoke failed", e)
         }
     }
 
@@ -96,5 +134,13 @@ abstract class AbstractTaskWorker(
         recentLoadBuffer[index] = executionTime.toFloat() / tickRate
     }
 
-    companion object: KLogging(Level.DEBUG)
+    companion object : KLogging(Level.DEBUG)
+
+    data class FixedRateTask(
+        val tickRateInterval: Long,
+        val startImmediately: Boolean = false,
+        val task: () -> Unit
+    ) {
+        var currentTick: Long = if (startImmediately) (tickRateInterval - 1) else 0
+    }
 }

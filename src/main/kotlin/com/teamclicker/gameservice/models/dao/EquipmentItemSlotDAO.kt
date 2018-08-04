@@ -1,7 +1,7 @@
 package com.teamclicker.gameservice.models.dao
 
-import com.teamclicker.gameservice.models.templates.ItemTemplate
-import com.teamclicker.gameservice.models.templates.getItem
+import com.teamclicker.gameservice.game.templates.ItemTemplate
+import com.teamclicker.gameservice.game.templates.getItem
 import mu.KLogging
 import javax.persistence.*
 

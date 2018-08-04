@@ -1,7 +1,7 @@
 package com.teamclicker.gameservice.models.ws
 
 data class AttackWTO(
-    val playerId: String,
+    val playerId: Long,
     val waveId: String,
-    val creaturId: String
+    val creatureId: String
 )

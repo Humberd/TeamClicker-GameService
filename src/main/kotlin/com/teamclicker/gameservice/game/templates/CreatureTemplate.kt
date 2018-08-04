@@ -1,7 +1,7 @@
-package com.teamclicker.gameservice.models.templates
+package com.teamclicker.gameservice.game.templates
 
 class CreatureTemplate {
-    var id: Long = 0
+    var templateId: Long = 0
 
     var maxHp: Int = 0
     var hp: Int = 0

@@ -1,6 +1,6 @@
 package com.teamclicker.gameservice.models.dao
 
-import com.teamclicker.gameservice.models.templates.MissionTemplate
+import com.teamclicker.gameservice.game.templates.MissionTemplate
 
 class MissionDAO {
     var id: Long = 0
