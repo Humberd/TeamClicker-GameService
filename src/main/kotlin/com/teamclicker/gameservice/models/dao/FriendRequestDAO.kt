@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "FriendRequest")
-class FriendRequestDAO : Serializable{
+class FriendRequestDAO : Serializable {
     @field:CreationTimestamp
     @Column(name = "createdAt", nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime

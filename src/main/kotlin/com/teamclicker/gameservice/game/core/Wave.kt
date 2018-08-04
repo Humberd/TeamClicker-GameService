@@ -2,7 +2,6 @@ package com.teamclicker.gameservice.game.core
 
 import com.teamclicker.gameservice.game.templates.CreatureTemplate
 import com.teamclicker.gameservice.game.templates.WaveTemplate
-import com.teamclicker.gameservice.models.ws.AttackWTO
 import com.teamclicker.gameservice.utils.Generators
 import mu.KLogging
 
@@ -15,10 +14,12 @@ class Wave(
     init {
         val gameCreaturesList = template.creatures.map {
             val id = Generators.creatureId()
-            Pair(id, GameCreature(
-                creatureId = id,
-                template = it
-            ))
+            Pair(
+                id, GameCreature(
+                    creatureId = id,
+                    template = it
+                )
+            )
         }
 
         creatures = mapOf(*gameCreaturesList.toTypedArray())

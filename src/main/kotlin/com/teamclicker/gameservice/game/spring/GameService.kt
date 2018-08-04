@@ -4,9 +4,9 @@ import com.teamclicker.gameservice.game.core.GameException
 import com.teamclicker.gameservice.game.core.GameManager
 import com.teamclicker.gameservice.game.core.GamePlayer
 import com.teamclicker.gameservice.game.core.Wave
+import com.teamclicker.gameservice.game.templates.WaveTemplate
 import com.teamclicker.gameservice.game.workers.WorkersSupervisor
 import com.teamclicker.gameservice.models.dao.PlayerDAO
-import com.teamclicker.gameservice.game.templates.WaveTemplate
 import com.teamclicker.gameservice.utils.Generators
 import mu.KLogging
 import org.springframework.stereotype.Service

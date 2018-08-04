@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level
 import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.extensions.round
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeUnit.*
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.math.roundToLong
 import kotlin.system.measureTimeMillis
 

@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PlayerRepository: JpaRepository<PlayerDAO, Long> {
+interface PlayerRepository : JpaRepository<PlayerDAO, Long> {
 
 }

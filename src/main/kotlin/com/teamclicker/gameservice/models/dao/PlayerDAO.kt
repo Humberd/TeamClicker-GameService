@@ -57,5 +57,6 @@ class PlayerDAO {
         cascade = [CascadeType.ALL],
         orphanRemoval = true,
         mappedBy = "sender"
-    )var friendRequestSentList: List<FriendRequestDAO> = arrayListOf()
+    )
+    var friendRequestSentList: List<FriendRequestDAO> = arrayListOf()
 }
