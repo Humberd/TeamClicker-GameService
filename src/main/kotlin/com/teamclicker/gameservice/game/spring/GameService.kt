@@ -31,7 +31,8 @@ class GameService(val workersSupervisor: WorkersSupervisor) {
                     template = it
                 )
             }.toMutableList(),
-            eventReceiver = workersSupervisor.getEventReceiver()
+            eventReceiver = workersSupervisor.getEventReceiver(),
+            eventTransmitter = workersSupervisor.getEventTransmitter()
         )
         gamesMap.put(manager.gameId, manager)
         return manager

@@ -7,7 +7,8 @@ class GameManager(
     val gameId: String,
     val players: Map<Long, GamePlayer>,
     val waves: MutableList<Wave>,
-    val eventReceiver: EventReceiver
+    val eventReceiver: EventReceiver,
+    val eventTransmitter: EventTransmitter
 ) {
     val actions = Actions()
     var status = NEW
@@ -20,6 +21,8 @@ class GameManager(
 
         nextWave()
         status = STARTED
+
+        notifyGameState()
     }
 
     fun endGame() {
@@ -33,6 +36,10 @@ class GameManager(
     internal fun getPlayer(playerId: Long): GamePlayer {
         players[playerId]?.let { return it }
         throw GameException("Player is not in this game.")
+    }
+
+    internal fun notifyGameState() {
+        eventTransmitter
     }
 
     inner class Actions {

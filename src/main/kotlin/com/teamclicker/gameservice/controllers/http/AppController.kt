@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.controllers
+package com.teamclicker.gameservice.controllers.http
 
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse

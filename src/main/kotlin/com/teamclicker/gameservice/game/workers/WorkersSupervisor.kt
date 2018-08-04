@@ -2,6 +2,7 @@ package com.teamclicker.gameservice.game.workers
 
 import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.game.core.EventReceiver
+import com.teamclicker.gameservice.game.core.EventTransmitter
 
 class WorkersSupervisor(
     fps: Double,
@@ -12,6 +13,7 @@ class WorkersSupervisor(
     internal val tickRate: Long
 
     internal var eventReceivers = arrayListOf<EventReceiver>()
+    internal var eventTransmitters = arrayListOf<EventTransmitter>()
 
     init {
         require(fps > 0) { "fps must be greater than 0, but is $fps" }
@@ -20,6 +22,7 @@ class WorkersSupervisor(
         require(maxAdditionalThreads > 0) { "maxAdditionalThreads must be greater than 0, but is $maxAdditionalThreads" }
 
         spawnEventReceiver()
+        spawnEventTransmitter()
     }
 
     /**
@@ -27,6 +30,13 @@ class WorkersSupervisor(
      */
     fun getEventReceiver(): EventReceiver {
         return eventReceivers[0]
+    }
+
+    /**
+     * TODO implement proper algorithms
+     */
+    fun getEventTransmitter(): EventTransmitter {
+        return eventTransmitters[0]
     }
 
 //    override fun run() {
@@ -51,6 +61,10 @@ class WorkersSupervisor(
 
     private fun spawnEventReceiver() {
         eventReceivers.add(EventReceiver(EventReceiver.counter++, 5, 200))
+    }
+
+    private fun spawnEventTransmitter() {
+        eventTransmitters.add(EventTransmitter(EventTransmitter.counter++, 5, 200))
     }
 
     companion object : KLogging()
