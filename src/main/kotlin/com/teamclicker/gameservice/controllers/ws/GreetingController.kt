@@ -2,6 +2,7 @@ package com.teamclicker.gameservice.controllers.ws
 
 import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.game.spring.WebSocketAPI
+import com.teamclicker.gameservice.security.isAdmin
 import com.teamclicker.gameservice.security.isUser
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.security.access.prepost.PreAuthorize

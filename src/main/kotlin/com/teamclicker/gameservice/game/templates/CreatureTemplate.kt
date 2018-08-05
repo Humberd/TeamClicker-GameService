@@ -1,15 +1,21 @@
 package com.teamclicker.gameservice.game.templates
 
-class CreatureTemplate {
-    var templateId: Long = 0
+data class CreatureTemplate(
+    var templateId: Long,
 
-    var maxHp: Int = 0
-    var hp: Int = 0
+    var name: String,
 
-    var atk: Int = 0
-    var def: Int = 0
+    var maxHp: Int,
+    var hp: Int,
 
-    var atkSpeed: Float = 0f
+    var atk: Int,
+    var def: Int,
 
-    lateinit var drop: CreatureDropTemplate
-}
+    var atkSpeed: Float,
+
+    var drop: CreatureDropTemplate
+)
+
+data class CreatureDropTemplate(
+    val experience: Long
+)

@@ -1,0 +1,14 @@
+[
+  {
+    "templateId": 1,
+    "name": "Mega Shield",
+    "atk": 3,
+    "def": 43
+  },
+  {
+    "templateId": 2,
+    "name": "Mega Sword",
+    "atk": 55,
+    "def": 12
+  }
+]

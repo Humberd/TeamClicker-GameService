@@ -1,7 +1,7 @@
 package com.teamclicker.gameservice.models.dao
 
+import com.teamclicker.gameservice.game.TemplatesResolver
 import com.teamclicker.gameservice.game.templates.ItemTemplate
-import com.teamclicker.gameservice.game.templates.getItem
 import mu.KLogging
 import javax.persistence.*
 
@@ -24,15 +24,13 @@ class EquipmentItemSlotDAO {
 
     @PrePersist
     fun saveItemId() {
-        logger.info { "PrePersist" }
-        itemId = item?.id
+        itemId = item?.templateId
     }
 
     @PostLoad
     fun loadItemObject() {
-        logger.info { "PostLoad $itemId" }
         itemId?.let {
-            item = getItem(it)
+            item = TemplatesResolver.instance.getItemTemplate(it)
         }
     }
 
