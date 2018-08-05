@@ -1,9 +1,10 @@
 package com.teamclicker.gameservice.security
 
 import com.teamclicker.gameservice.Constants.JWT_HEADER_NAME
-import com.teamclicker.gameservice.mappers.ClaimsToJWTDataMapper
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -16,8 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurity(
-    private val claimsToJWTDataMapper: ClaimsToJWTDataMapper,
-    private val cryptoKeys: CryptoKeys
+    @Lazy private val jwtAuthorizationFilter: JWTAuthorizationFilter
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
@@ -27,7 +27,7 @@ class WebSecurity(
             .formLogin().disable()
 //            .authorizeRequests().antMatchers("/ws").authenticated()
 //            .and()
-            .addFilter(JWTAuthorizationFilter(authenticationManager(), claimsToJWTDataMapper, cryptoKeys))
+            .addFilter(jwtAuthorizationFilter)
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 
@@ -48,5 +48,10 @@ class WebSecurity(
 
         source.registerCorsConfiguration("/**", corsConfig)
         return source
+    }
+
+    @Bean
+    override fun authenticationManagerBean(): AuthenticationManager {
+        return super.authenticationManagerBean()
     }
 }
