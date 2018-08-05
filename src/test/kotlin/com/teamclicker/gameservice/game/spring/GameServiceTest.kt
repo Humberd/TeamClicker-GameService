@@ -39,10 +39,10 @@ internal class GameServiceTest {
 
                 }
             })
-            val waves = listOf(WaveTemplate().also {
-                it.templateId = 4457
-                it.creatures = emptyList()
-            })
+            val waves = listOf(WaveTemplate(
+                templateId = 4457,
+                creatures = emptyList()
+            ))
             val manager = gameService.createGame(players, waves)
 
             assertEquals(manager, gameService.getGame(manager.gameId))

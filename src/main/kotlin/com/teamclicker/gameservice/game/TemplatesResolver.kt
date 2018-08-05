@@ -18,6 +18,8 @@ import java.io.FileNotFoundException
  * Reads template files, maps them to objects and saves them.
  *
  * By setting [instance] variable allows accessing from non-spring code
+ *
+ * TODO: Add validation of json objects against Kotlin classes
  */
 @Service
 class TemplatesResolver(

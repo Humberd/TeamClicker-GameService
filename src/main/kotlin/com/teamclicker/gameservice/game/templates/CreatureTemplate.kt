@@ -1,7 +1,7 @@
 package com.teamclicker.gameservice.game.templates
 
 data class CreatureTemplate(
-    var templateId: Long,
+    val templateId: Long,
 
     var name: String,
 
