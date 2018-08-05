@@ -1,5 +1,7 @@
 package com.teamclicker.gameservice.security
 
+import org.intellij.lang.annotations.Language
+
 object Role {
     const val USER = "USER"
     const val ADMIN = "ADMIN"
@@ -10,7 +12,9 @@ enum class RoleType {
     ADMIN
 }
 
-object SpELRole {
-    const val _USER = "'USER'"
-    const val _ADMIN = "'ADMIN'"
-}
+
+@Language("SpEL")
+const val isAdmin = "hasAuthority('${Role.ADMIN}')"
+
+@Language("SpEL")
+const val isUser = "hasAuthority('${Role.USER}')"

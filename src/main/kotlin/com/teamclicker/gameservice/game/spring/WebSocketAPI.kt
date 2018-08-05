@@ -10,5 +10,4 @@ class WebSocketAPI {
     fun gameState(): String {
         return "dupa"
     }
-
 }

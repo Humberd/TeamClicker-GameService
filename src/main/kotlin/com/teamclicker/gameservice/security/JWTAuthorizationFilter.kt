@@ -1,10 +1,11 @@
 package com.teamclicker.gameservice.security
 
+import ch.qos.logback.classic.Level
 import com.teamclicker.gameservice.Constants.JWT_HEADER_NAME
 import com.teamclicker.gameservice.Constants.JWT_TOKEN_PREFIX
+import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.mappers.ClaimsToJWTDataMapper
 import io.jsonwebtoken.Jwts
-import mu.KLogging
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
@@ -25,9 +26,8 @@ class JWTAuthorizationFilter(
     ) {
         val header = req.getHeader(JWT_HEADER_NAME)
 
-        /* When header is null or doesn't start with a required prefix*/
         if (header === null || !header.startsWith(JWT_TOKEN_PREFIX)) {
-            logger.trace { "Request has no $JWT_HEADER_NAME or it doesn't start with $JWT_TOKEN_PREFIX" }
+            JWTAuthorizationFilter.logger.trace { "Request has no '$JWT_HEADER_NAME' header or it doesn't start with '$JWT_TOKEN_PREFIX '" }
             chain.doFilter(req, res)
             return
         }
@@ -49,5 +49,5 @@ class JWTAuthorizationFilter(
         return JWTAuthenticationToken(jwtData)
     }
 
-    companion object : KLogging()
+    companion object : KLogging(Level.TRACE)
 }

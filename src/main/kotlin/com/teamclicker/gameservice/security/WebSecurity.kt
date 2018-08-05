@@ -25,6 +25,8 @@ class WebSecurity(
             .csrf().disable()
             .httpBasic().disable()
             .formLogin().disable()
+//            .authorizeRequests().antMatchers("/ws").authenticated()
+//            .and()
             .addFilter(JWTAuthorizationFilter(authenticationManager(), claimsToJWTDataMapper, cryptoKeys))
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
