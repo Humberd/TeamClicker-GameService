@@ -15,8 +15,10 @@ class PlayerDAO {
     @Column(name = "accountId", nullable = false)
     var accountId: Long = 0
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     lateinit var name: String
+    @Column(name = "nameLc", nullable = false, unique = true)
+    lateinit var nameLc: String
 
     @field:CreationTimestamp
     @Column(name = "createdAt", nullable = false, updatable = false)
@@ -24,8 +26,7 @@ class PlayerDAO {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    var status: PlayerStatus =
-        PlayerStatus.OFFLINE
+    var status: PlayerStatus = PlayerStatus.OFFLINE
 
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "statsId", nullable = false)
@@ -59,4 +60,14 @@ class PlayerDAO {
         mappedBy = "sender"
     )
     var friendRequestSentList: List<FriendRequestDAO> = arrayListOf()
+
+    @PrePersist
+    fun prePersist() = lowerCaseFields()
+
+    @PreUpdate
+    fun preUpdate() = lowerCaseFields()
+
+    fun lowerCaseFields() {
+        nameLc = name.toLowerCase()
+    }
 }

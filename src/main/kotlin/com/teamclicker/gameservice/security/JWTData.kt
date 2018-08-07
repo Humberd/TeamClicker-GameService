@@ -13,5 +13,9 @@ data class JWTData(
     fun `is`(role: String): Boolean {
         return roles.indexOf(role) >= 0
     }
+
+    fun `is`(role: RoleType): Boolean {
+        return `is`(role.toString())
+    }
 }
 

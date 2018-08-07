@@ -20,6 +20,7 @@ internal class PlayerRepositoryTest {
     fun `should foo`() {
         val player = PlayerDAO().also {
             it.stats = PlayerStatsDAO()
+            it.name = "Xyz"
             it.equipment = PlayerEquipmentDAO.create()
             it.inventory = PlayerInventoryDAO().also {
                 it.itemList = listOf(
@@ -34,6 +35,7 @@ internal class PlayerRepositoryTest {
 
         val player2 = PlayerDAO().also { pl ->
             pl.stats = PlayerStatsDAO()
+            pl.name = "abc"
             pl.equipment = PlayerEquipmentDAO.create()
             pl.inventory = PlayerInventoryDAO()
             pl.friendList = listOf(FriendshipDAO().also {
