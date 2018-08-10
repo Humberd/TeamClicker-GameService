@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.controllers
+package com.teamclicker.gameservice.controllers.http
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
