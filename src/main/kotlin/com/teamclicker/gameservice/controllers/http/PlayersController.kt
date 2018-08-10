@@ -5,6 +5,7 @@ import com.teamclicker.gameservice.exceptions.EntityAlreadyExistsException
 import com.teamclicker.gameservice.exceptions.EntityDoesNotExistException
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
+import com.teamclicker.gameservice.models.dto.PlayerDTO
 import com.teamclicker.gameservice.models.dto.UpdatePlayerDTO
 import com.teamclicker.gameservice.repositories.PlayerRepository
 import com.teamclicker.gameservice.security.JWTData
@@ -12,6 +13,8 @@ import com.teamclicker.gameservice.security.isAuthenticated
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -57,18 +60,44 @@ class PlayersController(
         return ResponseEntity(HttpStatus.OK)
     }
 
+    @ApiOperation(
+        value = "Reads player basic info",
+        notes = "Reads player basic info"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(code = 200, message = "Player read successfully"),
+            ApiResponse(code = 400, message = "Invalid path variable"),
+            ApiResponse(code = 411, message = "Player does not exist")
+        ]
+    )
     @PreAuthorize(isAuthenticated)
     @GetMapping("/{playerId}")
     @Transactional
-    fun read(@PathVariable playerId: Long): ResponseEntity<PlayerDAO> {
-        return ResponseEntity(HttpStatus.OK)
+    fun read(@PathVariable playerId: Long): ResponseEntity<PlayerDTO> {
+        val player = playerRepository.findById(playerId)
+        if (!player.isPresent) {
+            throw EntityDoesNotExistException("Player does not exist")
+        }
+
+        return ResponseEntity.ok(player.get().toDTO())
     }
 
+    @ApiOperation(
+        value = "Reads players list basic info",
+        notes = "Reads players list basic info"
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(code = 200, message = "Player read successfully")
+        ]
+    )
     @PreAuthorize(isAuthenticated)
     @GetMapping("")
     @Transactional
-    fun readAll(): ResponseEntity<List<PlayerDAO>> {
-        return ResponseEntity(HttpStatus.OK)
+    fun readAll(pageable: Pageable): ResponseEntity<Page<PlayerDTO>> {
+        val playersList = playerRepository.findAll(pageable).map { it.toDTO() }
+        return ResponseEntity.ok(playersList)
     }
 
     @ApiOperation(

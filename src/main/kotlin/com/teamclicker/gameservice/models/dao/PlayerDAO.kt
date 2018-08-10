@@ -1,5 +1,6 @@
 package com.teamclicker.gameservice.models.dao
 
+import com.teamclicker.gameservice.models.dto.PlayerDTO
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -70,4 +71,9 @@ class PlayerDAO {
     fun lowerCaseFields() {
         nameLc = name.toLowerCase()
     }
+
+    fun toDTO(): PlayerDTO {
+        return PlayerDTO(id, accountId, name, createdAt, status)
+    }
+
 }
