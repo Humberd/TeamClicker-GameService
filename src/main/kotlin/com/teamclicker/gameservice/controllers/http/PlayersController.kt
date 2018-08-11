@@ -47,17 +47,17 @@ class PlayersController(
     fun create(
         @RequestBody @Valid body: CreatePlayerDTO,
         jwtData: JWTData
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<PlayerDTO> {
         val playerExists = playerRepository.existsByName(body.name.toLowerCase())
-        if (!playerExists) {
+        if (playerExists) {
             throw EntityAlreadyExistsException("Player with this name already exists")
         }
 
         val newPlayer = playerDefaults.newPlayer(jwtData.accountId, body.name)
 
-        playerRepository.save(newPlayer)
+        val savedPlayer = playerRepository.save(newPlayer)
 
-        return ResponseEntity(HttpStatus.OK)
+        return ResponseEntity.ok(savedPlayer.toDTO())
     }
 
     @ApiOperation(
