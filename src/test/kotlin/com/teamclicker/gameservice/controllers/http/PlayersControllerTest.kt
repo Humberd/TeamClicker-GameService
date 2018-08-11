@@ -161,14 +161,4 @@ internal class PlayersControllerTest {
                 }
         }
     }
-
-    @Test
-    fun `should fsdfs`() {
-        val aaa = TypeToken.getParameterized(ArrayList::class.java, PlayerDTO::class.java)
-        val foo = PlayerDTO::class.java
-
-        val result = Gson().fromJson<Any>("[{id: 123}]", aaa.type)
-
-        println(result)
-    }
 }

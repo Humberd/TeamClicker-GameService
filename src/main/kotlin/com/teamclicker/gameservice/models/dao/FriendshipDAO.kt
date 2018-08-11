@@ -13,12 +13,12 @@ class FriendshipDAO : Serializable {
     lateinit var createdAt: LocalDateTime
 
     @Id
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne()
     @JoinColumn(name = "ownerId", nullable = false)
     lateinit var owner: PlayerDAO
 
     @Id
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne()
     @JoinColumn(name = "friendId", nullable = false)
     lateinit var friend: PlayerDAO
 }

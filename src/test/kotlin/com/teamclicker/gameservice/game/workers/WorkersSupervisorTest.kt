@@ -7,8 +7,6 @@ internal class WorkersSupervisorTest {
     @Test
     fun `should foo`() {
 
-
-//        Thread.sleep(2000000)
     }
 
     companion object : KLogging()
