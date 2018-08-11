@@ -2,6 +2,9 @@ package com.teamclicker.gameservice.controllers.helpers
 
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
 import com.teamclicker.gameservice.models.dto.PlayerDTO
+import com.teamclicker.gameservice.testConfig.endpointBuilder.EndpointBuilder
+import com.teamclicker.gameservice.testConfig.endpointBuilder.PagedEndpointBuilder
+import com.teamclicker.gameservice.testConfig.endpointBuilder.TestEntity
 import com.teamclicker.gameservice.utils.Generators
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpMethod.GET

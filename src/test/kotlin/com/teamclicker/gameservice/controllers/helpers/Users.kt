@@ -1,5 +1,9 @@
 package com.teamclicker.gameservice.controllers.helpers
 
+import com.teamclicker.gameservice.testConfig.endpointBuilder.AdminMock
+import com.teamclicker.gameservice.testConfig.endpointBuilder.Anonymous
+import com.teamclicker.gameservice.testConfig.endpointBuilder.UserMock
+
 object Users {
     val ALICE
         get() = UserMock(
@@ -23,19 +27,4 @@ object Users {
 
     val ANONYMOUS
         get() = Anonymous()
-
 }
-
-sealed class TestEntity(
-    val token: String?
-)
-
-class UserMock(
-    token: String
-) : TestEntity(token)
-
-class AdminMock(
-    token: String
-) : TestEntity(token)
-
-class Anonymous : TestEntity(null)

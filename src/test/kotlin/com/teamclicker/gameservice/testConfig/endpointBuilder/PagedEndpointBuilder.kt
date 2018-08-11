@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.controllers.helpers
+package com.teamclicker.gameservice.testConfig.endpointBuilder
 
 import com.google.gson.reflect.TypeToken
 import org.springframework.boot.test.web.client.TestRestTemplate

@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.controllers.helpers
+package com.teamclicker.gameservice.testConfig.endpointBuilder
 
 import com.google.gson.*
 import com.teamclicker.gameservice.Constants.JWT_HEADER_NAME
