@@ -68,7 +68,7 @@ class PlayersController(
         value = [
             ApiResponse(code = 200, message = "Player read successfully"),
             ApiResponse(code = 400, message = "Invalid parameters"),
-            ApiResponse(code = 411, message = "Player does not exist")
+            ApiResponse(code = 404, message = "Player does not exist")
         ]
     )
     @PreAuthorize(isAuthenticated)
@@ -116,7 +116,7 @@ class PlayersController(
         value = [
             ApiResponse(code = 200, message = "Player created successfully"),
             ApiResponse(code = 400, message = "Invalid request body"),
-            ApiResponse(code = 411, message = "Player does not exist")
+            ApiResponse(code = 404, message = "Player does not exist")
         ]
     )
     @PreAuthorize(isAuthenticated)
@@ -150,7 +150,7 @@ class PlayersController(
     @ApiResponses(
         value = [
             ApiResponse(code = 200, message = "Player deleted successfully"),
-            ApiResponse(code = 411, message = "Player does not exist")
+            ApiResponse(code = 404, message = "Player does not exist")
         ]
     )
     @PreAuthorize(isAuthenticated)

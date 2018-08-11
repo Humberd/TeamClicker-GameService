@@ -11,7 +11,9 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
+import org.springframework.web.util.UriUtils
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
@@ -113,7 +115,7 @@ abstract class EndpointBuilder<
             .queryParams(queryParams)
 
         val response = http.exchange(
-            urlBuilder.toUriString(),
+            urlBuilder.build(false).toUriString(),
             method,
             httpEntity,
             String::class.java,

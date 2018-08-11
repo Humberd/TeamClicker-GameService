@@ -21,7 +21,7 @@ class InvalidCredentialsException(message: String) : RuntimeException(message)
 class EntityAlreadyExistsException(message: String) : RuntimeException(message)
 
 @ResponseBody
-@ResponseStatus(HttpStatus.LENGTH_REQUIRED) // 411
+@ResponseStatus(HttpStatus.NOT_FOUND) // 404
 class EntityDoesNotExistException(message: String) : RuntimeException(message)
 
 

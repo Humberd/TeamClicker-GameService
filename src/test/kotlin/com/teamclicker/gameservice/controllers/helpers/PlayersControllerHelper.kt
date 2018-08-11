@@ -2,19 +2,19 @@ package com.teamclicker.gameservice.controllers.helpers
 
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
 import com.teamclicker.gameservice.models.dto.PlayerDTO
+import com.teamclicker.gameservice.models.dto.UpdatePlayerDTO
 import com.teamclicker.gameservice.testConfig.endpointBuilder.EndpointBuilder
 import com.teamclicker.gameservice.testConfig.endpointBuilder.PagedEndpointBuilder
 import com.teamclicker.gameservice.testConfig.endpointBuilder.TestEntity
 import com.teamclicker.gameservice.utils.Generators
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.POST
+import org.springframework.http.HttpMethod.*
 import org.springframework.stereotype.Service
 
 @Service
 class PlayersControllerHelper(private val http: TestRestTemplate) {
     fun create() = Create()
-    fun create(withUser: TestEntity) = Create()
+    fun quickCreate(withUser: TestEntity) = Create()
         .with(withUser)
         .sending(CreatePlayerDTO().also {
             it.name = Generators.randomStringId()
@@ -24,6 +24,8 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
 
     fun read() = Read()
     fun readAll() = ReadAll()
+    fun update() = Update()
+    fun delete() = Delete()
 
     inner class Create :
         EndpointBuilder<Create, CreatePlayerDTO, PlayerDTO>(PlayerDTO::class.java, http) {
@@ -44,5 +46,22 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
         PagedEndpointBuilder<ReadAll, Void, PlayerDTO>(PlayerDTO::class.java, http) {
         override val url = "/api/players"
         override val method = GET
+    }
+
+    inner class Update :
+        EndpointBuilder<Update, UpdatePlayerDTO, Void>(Void::class.java, http) {
+        override val url = "/api/players/{playerId}"
+        override val method = PUT
+
+        fun playerId(playerId: Long) = addPathVariable("playerId", playerId)
+    }
+
+    inner class Delete :
+        EndpointBuilder<Delete, Void, Void>(Void::class.java, http) {
+        override val url = "/api/players/{playerId}"
+        override val method = DELETE
+
+        fun playerId(playerId: Long) = addPathVariable("playerId", playerId)
+
     }
 }
