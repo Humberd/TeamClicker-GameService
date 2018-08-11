@@ -38,7 +38,7 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
     }
 
     inner class ReadAll :
-            PagedEndpointBuilder<ReadAll, Void, PlayerDTO>(PlayerDTO::class.java, http) {
+        PagedEndpointBuilder<ReadAll, Void, PlayerDTO>(PlayerDTO::class.java, http) {
         override val url = "/api/players"
         override val method = GET
     }

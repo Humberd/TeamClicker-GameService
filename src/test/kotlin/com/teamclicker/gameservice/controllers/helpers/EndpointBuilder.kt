@@ -1,6 +1,5 @@
 package com.teamclicker.gameservice.controllers.helpers
 
-import com.github.salomonbrys.kotson.string
 import com.google.gson.*
 import com.teamclicker.gameservice.Constants.JWT_HEADER_NAME
 import com.teamclicker.gameservice.Constants.JWT_TOKEN_PREFIX
@@ -14,10 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.util.UriComponentsBuilder
 import java.lang.reflect.Type
-import java.text.DateFormat
-import java.time.*
-import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
-import java.util.*
+import java.time.LocalDateTime
 import kotlin.reflect.KClass
 
 

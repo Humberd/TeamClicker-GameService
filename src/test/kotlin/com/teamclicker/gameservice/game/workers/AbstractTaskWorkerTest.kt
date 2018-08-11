@@ -195,7 +195,7 @@ internal class AbstractTaskWorkerTest {
 
         @Test
         fun `should add task with tick rate interval of 1`() {
-            sut.queueTaskEveryTick {  }
+            sut.queueTaskEveryTick { }
 
             assertEquals(1, sut.fixedTickRateTaskQueue[0].tickRateInterval)
         }
@@ -323,7 +323,7 @@ internal class AbstractTaskWorkerTest {
             assertEquals(0, sut.fixedTickRateTaskQueue.size)
         }
     }
-    
+
     @Nested
     inner class ExecuteFixedRateTasks {
         lateinit var sut: AbstractTaskWorker
@@ -332,12 +332,12 @@ internal class AbstractTaskWorkerTest {
         fun setUp() {
             sut = object : AbstractTaskWorker("foo", 5, 10) {}
         }
-        
+
         @Test
         fun `should execute task with 1 tick rate every tick`() {
             var task1Counter = 0
             val task1 = AbstractTaskWorker.FixedRateTask(1) {
-               task1Counter++
+                task1Counter++
             }
 
             assertEquals(0, task1Counter)

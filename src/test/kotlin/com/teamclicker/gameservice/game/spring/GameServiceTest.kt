@@ -39,10 +39,12 @@ internal class GameServiceTest {
 
                 }
             })
-            val waves = listOf(WaveTemplate(
-                templateId = 4457,
-                creatures = emptyList()
-            ))
+            val waves = listOf(
+                WaveTemplate(
+                    templateId = 4457,
+                    creatures = emptyList()
+                )
+            )
             val manager = gameService.createGame(players, waves)
 
             assertEquals(manager, gameService.getGame(manager.gameId))
@@ -58,7 +60,7 @@ internal class GameServiceTest {
             assertThrows(GameException::class.java) {
                 gameService.getGame("1234")
             }
-         }
+        }
     }
 
     @Nested

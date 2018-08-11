@@ -6,6 +6,7 @@ import com.teamclicker.gameservice.Constants.CREATURE_TEMPLATES_PATH
 import com.teamclicker.gameservice.Constants.ITEM_TEMPLATES_PATH
 import com.teamclicker.gameservice.Constants.TEMPLATES_PATH
 import com.teamclicker.gameservice.extensions.KLogging
+import com.teamclicker.gameservice.game.spring.TemplatesResolver.Companion.instance
 import com.teamclicker.gameservice.game.templates.CreatureTemplate
 import com.teamclicker.gameservice.game.templates.ItemTemplate
 import com.teamclicker.gameservice.game.templates.TemplateNotExistException

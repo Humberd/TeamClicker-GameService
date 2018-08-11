@@ -1,13 +1,10 @@
 package com.teamclicker.gameservice.repositories
 
-import com.teamclicker.gameservice.models.dao.*
 import mu.KLogging
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import javax.transaction.Transactional
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

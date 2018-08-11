@@ -4,7 +4,6 @@ import com.teamclicker.gameservice.defaults.PlayerDefaults
 import com.teamclicker.gameservice.exceptions.EntityAlreadyExistsException
 import com.teamclicker.gameservice.exceptions.EntityDoesNotExistException
 import com.teamclicker.gameservice.exceptions.InvalidParametersException
-import com.teamclicker.gameservice.models.dao.PlayerDAO
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
 import com.teamclicker.gameservice.models.dto.PlayerDTO
 import com.teamclicker.gameservice.models.dto.UpdatePlayerDTO
@@ -75,8 +74,10 @@ class PlayersController(
     @PreAuthorize(isAuthenticated)
     @GetMapping("/find")
     @Transactional
-    fun read(@RequestParam(required = false) id: Long?,
-             @RequestParam(required = false) name: String?): ResponseEntity<PlayerDTO> {
+    fun read(
+        @RequestParam(required = false) id: Long?,
+        @RequestParam(required = false) name: String?
+    ): ResponseEntity<PlayerDTO> {
         val player = when {
             id !== null -> playerRepository.findById(id)
             name !== null -> playerRepository.findByName(name.toLowerCase())

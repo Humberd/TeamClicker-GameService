@@ -1,12 +1,9 @@
 package com.teamclicker.gameservice.controllers.http
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.teamclicker.gameservice.controllers.helpers.PlayersControllerHelper
 import com.teamclicker.gameservice.controllers.helpers.Users.ALICE
 import com.teamclicker.gameservice.controllers.helpers.Users.ANONYMOUS
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
-import com.teamclicker.gameservice.models.dto.PlayerDTO
 import com.teamclicker.gameservice.repositories.PlayerRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -16,10 +13,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.util.ArrayList
-import kotlin.math.log
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -78,7 +72,7 @@ internal class PlayersControllerTest {
                 .expectError(410)
         }
     }
-    
+
     @Nested
     inner class Read {
         @BeforeEach

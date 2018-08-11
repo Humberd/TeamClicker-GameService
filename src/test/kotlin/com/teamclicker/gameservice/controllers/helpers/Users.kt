@@ -1,7 +1,5 @@
 package com.teamclicker.gameservice.controllers.helpers
 
-import org.apache.catalina.User
-
 object Users {
     val ALICE
         get() = UserMock(
