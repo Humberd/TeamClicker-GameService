@@ -43,4 +43,13 @@ interface PlayerRepository : JpaRepository<PlayerDAO, Long> {
         @Param("playerId") playerId: Long,
         @Param("accountId") accountId: Long
     ): Optional<PlayerDAO>
+
+    @Query(
+        """
+        select player
+        from PlayerDAO as player
+        where player.nameLc = :nameLc
+    """
+    )
+    fun findByName(@Param("nameLc") nameLc: String): Optional<PlayerDAO>
 }

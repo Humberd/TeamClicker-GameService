@@ -3,6 +3,7 @@ package com.teamclicker.gameservice.controllers.http
 import com.teamclicker.gameservice.defaults.PlayerDefaults
 import com.teamclicker.gameservice.exceptions.EntityAlreadyExistsException
 import com.teamclicker.gameservice.exceptions.EntityDoesNotExistException
+import com.teamclicker.gameservice.exceptions.InvalidParametersException
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
 import com.teamclicker.gameservice.models.dto.PlayerDTO
@@ -67,15 +68,21 @@ class PlayersController(
     @ApiResponses(
         value = [
             ApiResponse(code = 200, message = "Player read successfully"),
-            ApiResponse(code = 400, message = "Invalid path variable"),
+            ApiResponse(code = 400, message = "Invalid parameters"),
             ApiResponse(code = 411, message = "Player does not exist")
         ]
     )
     @PreAuthorize(isAuthenticated)
-    @GetMapping("/{playerId}")
+    @GetMapping("/find")
     @Transactional
-    fun read(@PathVariable playerId: Long): ResponseEntity<PlayerDTO> {
-        val player = playerRepository.findById(playerId)
+    fun read(@RequestParam(required = false) id: Long?,
+             @RequestParam(required = false) name: String?): ResponseEntity<PlayerDTO> {
+        val player = when {
+            id !== null -> playerRepository.findById(id)
+            name !== null -> playerRepository.findByName(name.toLowerCase())
+            else -> throw InvalidParametersException("No sufficient selectors. Please provide id or name.")
+        }
+
         if (!player.isPresent) {
             throw EntityDoesNotExistException("Player does not exist")
         }

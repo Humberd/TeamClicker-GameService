@@ -1,6 +1,7 @@
 package com.teamclicker.gameservice.game
 
 import com.google.gson.Gson
+import com.teamclicker.gameservice.game.spring.TemplatesResolver
 import com.teamclicker.gameservice.game.templates.CreatureTemplate
 import com.teamclicker.gameservice.game.templates.ItemTemplate
 import org.junit.jupiter.api.BeforeEach

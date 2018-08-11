@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.game
+package com.teamclicker.gameservice.game.spring
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
 class InvalidRequestBodyException(message: String) : RuntimeException(message)
 
+@ResponseBody
+@ResponseStatus(HttpStatus.BAD_REQUEST) // 400
+class InvalidParametersException(message: String) : RuntimeException(message)
+
 @ResponseBody()
 @ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
 class InvalidCredentialsException(message: String) : RuntimeException(message)

@@ -1,6 +1,6 @@
 package com.teamclicker.gameservice.models.dao
 
-import com.teamclicker.gameservice.game.TemplatesResolver
+import com.teamclicker.gameservice.game.spring.TemplatesResolver
 import com.teamclicker.gameservice.game.templates.ItemTemplate
 import javax.persistence.*
 

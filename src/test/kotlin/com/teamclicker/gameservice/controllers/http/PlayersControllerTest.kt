@@ -1,9 +1,12 @@
 package com.teamclicker.gameservice.controllers.http
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.teamclicker.gameservice.controllers.helpers.PlayersControllerHelper
 import com.teamclicker.gameservice.controllers.helpers.Users.ALICE
 import com.teamclicker.gameservice.controllers.helpers.Users.ANONYMOUS
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
+import com.teamclicker.gameservice.models.dto.PlayerDTO
 import com.teamclicker.gameservice.repositories.PlayerRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.ArrayList
+import kotlin.math.log
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -98,7 +103,7 @@ internal class PlayersControllerTest {
         }
 
         @Test
-        fun `should read player`() {
+        fun `should read player by id`() {
             val player = playersHelper.create(ALICE)
 
             playersHelper.read()
@@ -108,5 +113,62 @@ internal class PlayersControllerTest {
                     assertEquals(player, it.body)
                 }
         }
+
+        @Test
+        fun `should read player by name`() {
+            val player = playersHelper.create(ALICE)
+
+            playersHelper.read()
+                .with(ALICE)
+                .playerName(player.name.toUpperCase())
+                .expectSuccess {
+                    assertEquals(player, it.body)
+                }
+        }
+
+        @Test
+        fun `should read player by id when 2 params were presented`() {
+            val player = playersHelper.create(ALICE)
+
+            playersHelper.read()
+                .with(ALICE)
+                .playerId(player.id)
+                .playerName("not existing name")
+                .expectSuccess {
+                    assertEquals(player, it.body)
+                }
+        }
+
+    }
+
+    @Nested
+    inner class ReadAll {
+        @BeforeEach
+        fun setUp() {
+            playerRepository.deleteAll()
+        }
+
+        @Test
+        fun `should read all users`() {
+            playersHelper.create(ALICE)
+            playersHelper.create(ALICE)
+            playersHelper.create(ALICE)
+
+            playersHelper.readAll()
+                .with(ALICE)
+                .expectSuccess {
+                    println(it)
+                }
+        }
+    }
+
+    @Test
+    fun `should fsdfs`() {
+        val aaa = TypeToken.getParameterized(ArrayList::class.java, PlayerDTO::class.java)
+        val foo = PlayerDTO::class.java
+
+        val result = Gson().fromJson<Any>("[{id: 123}]", aaa.type)
+
+        println(result)
     }
 }

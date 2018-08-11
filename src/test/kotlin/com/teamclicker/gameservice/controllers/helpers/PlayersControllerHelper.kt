@@ -18,7 +18,9 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
         })
         .expectSuccess()
         .body!!
+
     fun read() = Read()
+    fun readAll() = ReadAll()
 
     inner class Create :
         EndpointBuilder<Create, CreatePlayerDTO, PlayerDTO>(PlayerDTO::class.java, http) {
@@ -28,9 +30,16 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
 
     inner class Read :
         EndpointBuilder<Read, Void, PlayerDTO>(PlayerDTO::class.java, http) {
-        override val url = "/api/players/{playerId}"
+        override val url = "/api/players/find"
         override val method = GET
 
-        fun playerId(playerId: Long) = addPathVariable("playerId", playerId)
+        fun playerId(id: Long) = addQueryParam("id", id)
+        fun playerName(name: String) = addQueryParam("name", name)
+    }
+
+    inner class ReadAll :
+            PagedEndpointBuilder<ReadAll, Void, PlayerDTO>(PlayerDTO::class.java, http) {
+        override val url = "/api/players"
+        override val method = GET
     }
 }

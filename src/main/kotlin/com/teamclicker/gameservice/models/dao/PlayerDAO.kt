@@ -16,7 +16,7 @@ class PlayerDAO {
     @Column(name = "accountId", nullable = false)
     var accountId: Long = 0
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     lateinit var name: String
     @Column(name = "nameLc", nullable = false, unique = true)
     lateinit var nameLc: String
