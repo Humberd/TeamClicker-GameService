@@ -80,9 +80,33 @@ internal class PlayersControllerTest {
         fun setUp() {
             playerRepository.deleteAll()
         }
+
+        @Test
+        fun `should not read player when user is UNAUTHORIZED`() {
+            playersHelper.read()
+                .with(ANONYMOUS)
+                .playerId(1234)
+                .expectError(403)
+        }
+
         @Test
         fun `should not read player when player does not exist`() {
+            playersHelper.read()
+                .with(ALICE)
+                .playerId(1234)
+                .expectError(411)
+        }
 
+        @Test
+        fun `should read player`() {
+            val player = playersHelper.create(ALICE)
+
+            playersHelper.read()
+                .with(ALICE)
+                .playerId(player.id)
+                .expectSuccess {
+                    assertEquals(player, it.body)
+                }
         }
     }
 }
