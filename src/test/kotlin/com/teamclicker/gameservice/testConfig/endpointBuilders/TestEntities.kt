@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.testConfig.endpointBuilder
+package com.teamclicker.gameservice.testConfig.endpointBuilders
 
 sealed class TestEntity(
     val token: String?

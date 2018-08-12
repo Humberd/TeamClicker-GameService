@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.testConfig.endpointBuilder
+package com.teamclicker.gameservice.testConfig.endpointBuilders
 
 import com.google.gson.*
 import com.teamclicker.gameservice.Constants.JWT_HEADER_NAME
@@ -11,17 +11,15 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.StringUtils
 import org.springframework.web.util.UriComponentsBuilder
-import org.springframework.web.util.UriUtils
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 
 
 @Suppress("UNCHECKED_CAST")
-abstract class EndpointBuilder<
-        out Child : EndpointBuilder<Child, Body, Response>,
+abstract class HttpEndpointBuilder<
+        out Child : HttpEndpointBuilder<Child, Body, Response>,
         Body : Any,
         Response : Any
         >(

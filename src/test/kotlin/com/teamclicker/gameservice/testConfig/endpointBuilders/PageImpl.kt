@@ -1,4 +1,4 @@
-package com.teamclicker.gameservice.testConfig.endpointBuilder
+package com.teamclicker.gameservice.testConfig.endpointBuilders
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 

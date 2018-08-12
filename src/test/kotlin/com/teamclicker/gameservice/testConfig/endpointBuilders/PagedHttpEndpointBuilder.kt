@@ -1,15 +1,15 @@
-package com.teamclicker.gameservice.testConfig.endpointBuilder
+package com.teamclicker.gameservice.testConfig.endpointBuilders
 
 import com.google.gson.reflect.TypeToken
 import org.springframework.boot.test.web.client.TestRestTemplate
 import java.lang.reflect.Type
 
 
-abstract class PagedEndpointBuilder<Child : EndpointBuilder<Child, Body, PageImpl<Response>>, Body : Any, Response : Any>(
+abstract class PagedHttpEndpointBuilder<Child : HttpEndpointBuilder<Child, Body, PageImpl<Response>>, Body : Any, Response : Any>(
     responseType: Type,
     http: TestRestTemplate
 ) :
-    EndpointBuilder<Child, Body, PageImpl<Response>>(
+    HttpEndpointBuilder<Child, Body, PageImpl<Response>>(
         TypeToken.getParameterized(
             PageImpl::class.java,
             responseType

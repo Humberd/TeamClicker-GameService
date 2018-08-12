@@ -1,8 +1,8 @@
 package com.teamclicker.gameservice.controllers.helpers
 
-import com.teamclicker.gameservice.testConfig.endpointBuilder.AdminMock
-import com.teamclicker.gameservice.testConfig.endpointBuilder.Anonymous
-import com.teamclicker.gameservice.testConfig.endpointBuilder.UserMock
+import com.teamclicker.gameservice.testConfig.endpointBuilders.AdminMock
+import com.teamclicker.gameservice.testConfig.endpointBuilders.Anonymous
+import com.teamclicker.gameservice.testConfig.endpointBuilders.UserMock
 
 object Users {
     val ALICE

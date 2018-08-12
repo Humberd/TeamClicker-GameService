@@ -3,9 +3,9 @@ package com.teamclicker.gameservice.controllers.helpers
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
 import com.teamclicker.gameservice.models.dto.PlayerDTO
 import com.teamclicker.gameservice.models.dto.UpdatePlayerDTO
-import com.teamclicker.gameservice.testConfig.endpointBuilder.EndpointBuilder
-import com.teamclicker.gameservice.testConfig.endpointBuilder.PagedEndpointBuilder
-import com.teamclicker.gameservice.testConfig.endpointBuilder.TestEntity
+import com.teamclicker.gameservice.testConfig.endpointBuilders.HttpEndpointBuilder
+import com.teamclicker.gameservice.testConfig.endpointBuilders.PagedHttpEndpointBuilder
+import com.teamclicker.gameservice.testConfig.endpointBuilders.TestEntity
 import com.teamclicker.gameservice.utils.Generators
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpMethod.*
@@ -28,13 +28,13 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
     fun delete() = Delete()
 
     inner class Create :
-        EndpointBuilder<Create, CreatePlayerDTO, PlayerDTO>(PlayerDTO::class.java, http) {
+        HttpEndpointBuilder<Create, CreatePlayerDTO, PlayerDTO>(PlayerDTO::class.java, http) {
         override val url = "/api/players"
         override val method = POST
     }
 
     inner class Read :
-        EndpointBuilder<Read, Void, PlayerDTO>(PlayerDTO::class.java, http) {
+        HttpEndpointBuilder<Read, Void, PlayerDTO>(PlayerDTO::class.java, http) {
         override val url = "/api/players/find"
         override val method = GET
 
@@ -43,13 +43,13 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
     }
 
     inner class ReadAll :
-        PagedEndpointBuilder<ReadAll, Void, PlayerDTO>(PlayerDTO::class.java, http) {
+        PagedHttpEndpointBuilder<ReadAll, Void, PlayerDTO>(PlayerDTO::class.java, http) {
         override val url = "/api/players"
         override val method = GET
     }
 
     inner class Update :
-        EndpointBuilder<Update, UpdatePlayerDTO, Void>(Void::class.java, http) {
+        HttpEndpointBuilder<Update, UpdatePlayerDTO, Void>(Void::class.java, http) {
         override val url = "/api/players/{playerId}"
         override val method = PUT
 
@@ -57,7 +57,7 @@ class PlayersControllerHelper(private val http: TestRestTemplate) {
     }
 
     inner class Delete :
-        EndpointBuilder<Delete, Void, Void>(Void::class.java, http) {
+        HttpEndpointBuilder<Delete, Void, Void>(Void::class.java, http) {
         override val url = "/api/players/{playerId}"
         override val method = DELETE
 
