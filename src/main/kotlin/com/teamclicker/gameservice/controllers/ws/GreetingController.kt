@@ -1,5 +1,6 @@
 package com.teamclicker.gameservice.controllers.ws
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.game.spring.WebSocketAPI
 import com.teamclicker.gameservice.security.isUser
@@ -12,7 +13,7 @@ class GreetingController(
     val webSocketAPI: WebSocketAPI
 ) {
 
-    @PreAuthorize(isUser)
+//    @PreAuthorize(isUser)
     @MessageMapping("/hello")
     fun greeting(message: Foo) {
         Thread.sleep(1000) // simulated delay
@@ -24,5 +25,5 @@ class GreetingController(
 }
 
 data class Foo(
-    var name: String
+    val name: String
 )

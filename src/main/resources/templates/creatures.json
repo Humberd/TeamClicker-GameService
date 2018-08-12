@@ -1,0 +1,26 @@
+[
+  {
+    "templateId": 1,
+    "name": "Troll",
+    "maxHp": 130,
+    "hp": 130,
+    "atk": 12,
+    "def": 11,
+    "atkSpeed": 1.2,
+    "drop": {
+      "experience": 20
+    }
+  },
+  {
+    "templateId": 2,
+    "name": "Orc",
+    "maxHp": 125,
+    "hp": 125,
+    "atk": 15,
+    "def": 10,
+    "atkSpeed": 1.5,
+    "drop": {
+      "experience": 30
+    }
+  }
+]
