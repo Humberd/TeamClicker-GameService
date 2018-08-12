@@ -35,7 +35,7 @@ abstract class HttpEndpointBuilder<
     abstract val method: HttpMethod
 
     /**
-     * Makes a http request to a signIn endpoint and saves its jwt to the headers map
+     * Sends user token in the header
      */
     fun with(user: TestEntity): Child {
         user.token?.let {
