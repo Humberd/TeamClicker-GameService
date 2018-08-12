@@ -22,12 +22,13 @@ class JWTAuthorizationChannelInterceptor(
             val optionalAuth = authorizationHeaderExtractor.extractCredentials(accessor)
             if (optionalAuth.isPresent) {
                 accessor.user = optionalAuth.get()
-                WebSocketConfig.logger.info { "Saving token..." }
+                logger.info { "Saving token..." }
             }
         }
 
         return message
     }
+
 
     companion object : KLogging(Level.TRACE)
 }
