@@ -17,7 +17,7 @@ class GreetingController(
     fun greeting(message: Foo) {
         Thread.sleep(1000) // simulated delay
         logger.info { "Greetings $message" }
-        webSocketAPI.gameState()
+        webSocketAPI.gameState(message.name, message)
     }
 
     companion object : KLogging()

@@ -5,6 +5,10 @@ import org.springframework.messaging.simp.stomp.StompHeaders
 import org.springframework.messaging.simp.stomp.StompSession
 import java.lang.reflect.Type
 
+interface Subscriber<out Response : Any> {
+    fun subscribe(callback: (Response) -> Unit = {}): StompSession.Subscription
+}
+
 @Suppress("UNCHECKED_CAST")
 abstract class WebSocketSubscriptionBuilder<
         out Child : WebSocketSubscriptionBuilder<Child, Response>,
@@ -12,8 +16,10 @@ abstract class WebSocketSubscriptionBuilder<
         >(
     private val responseType: Type,
     port: Int
-) : WebSocketConnector<Child>(port) {
-    fun subscribe(callback: (Response) -> Unit = {}): StompSession.Subscription {
+) : WebSocketConnector<Child>(port), Subscriber<Response> {
+    fun build(): Subscriber<Response> = this
+
+    override fun subscribe(callback: (Response) -> Unit): StompSession.Subscription {
         return ensureSession()
             .subscribe(resolvePath(), StompFrameHandlerImpl(callback))
     }
