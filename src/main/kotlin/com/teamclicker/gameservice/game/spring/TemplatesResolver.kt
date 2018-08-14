@@ -6,53 +6,30 @@ import com.teamclicker.gameservice.Constants.CREATURE_TEMPLATES_PATH
 import com.teamclicker.gameservice.Constants.ITEM_TEMPLATES_PATH
 import com.teamclicker.gameservice.Constants.TEMPLATES_PATH
 import com.teamclicker.gameservice.extensions.KLogging
-import com.teamclicker.gameservice.game.spring.TemplatesResolver.Companion.instance
-import com.teamclicker.gameservice.game.templates.CreatureTemplate
-import com.teamclicker.gameservice.game.templates.ItemTemplate
-import com.teamclicker.gameservice.game.templates.TemplateNotExistException
 import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileNotFoundException
+import javax.annotation.PostConstruct
 
 /**
  * Reads template files, maps them to objects and saves them.
- *
- * By setting [instance] variable allows accessing from non-spring code
  *
  * TODO: Add validation of json objects against Kotlin classes
  */
 @Service
 class TemplatesResolver(
     private val resourceLoader: ResourceLoader,
-    private val gson: Gson
+    private val gson: Gson,
+    private val templatesStore: TemplatesStore
 ) {
-    internal final val itemTemplates: Map<Long, ItemTemplate>
-    internal final val creatureTemplates: Map<Long, CreatureTemplate>
 
-    init {
-        itemTemplates = resolveTemplates(ITEM_TEMPLATES_PATH) { it.templateId }
-        creatureTemplates = resolveTemplates(CREATURE_TEMPLATES_PATH) { it.templateId }
-
-        instance = this
-    }
-
-    /**
-     * Gets a cloned instance of a template, otherwise throws [TemplateNotExistException]
-     */
-    fun getItemTemplate(templateId: Long): ItemTemplate {
-        return itemTemplates.getOrElse(templateId) {
-            throw TemplateNotExistException("Item Template $templateId does not exist")
-        }.copy()
-    }
-
-    /**
-     * Gets a cloned instance of a template, otherwise throws [TemplateNotExistException]
-     */
-    fun getCreatureTemplate(templateId: Long): CreatureTemplate {
-        return creatureTemplates.getOrElse(templateId) {
-            throw TemplateNotExistException("Creature Template $templateId does not exist")
-        }.copy()
+    @PostConstruct
+    fun onInit() {
+        templatesStore.also {
+            it.itemTemplates = resolveTemplates(ITEM_TEMPLATES_PATH) { it.templateId }
+            it.creatureTemplates = resolveTemplates(CREATURE_TEMPLATES_PATH) { it.templateId }
+        }
     }
 
     /**
@@ -90,8 +67,5 @@ class TemplatesResolver(
     }
 
 
-    companion object : KLogging() {
-        lateinit var instance: TemplatesResolver
-            private set
-    }
+    companion object : KLogging()
 }

@@ -1,7 +1,6 @@
 package com.teamclicker.gameservice.aop
 
-import ch.qos.logback.classic.Level
-import ch.qos.logback.classic.Level.*
+import ch.qos.logback.classic.Level.TRACE
 import com.teamclicker.gameservice.extensions.KLogging
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around

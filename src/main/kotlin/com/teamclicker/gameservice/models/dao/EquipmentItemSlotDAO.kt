@@ -1,6 +1,7 @@
 package com.teamclicker.gameservice.models.dao
 
 import com.teamclicker.gameservice.game.spring.TemplatesResolver
+import com.teamclicker.gameservice.game.spring.TemplatesStore
 import com.teamclicker.gameservice.game.templates.ItemTemplate
 import mu.KLogging
 import javax.persistence.*
@@ -30,7 +31,7 @@ class EquipmentItemSlotDAO {
     @PostLoad
     fun loadItemObject() {
         itemId?.let {
-            item = TemplatesResolver.instance.getItemTemplate(it)
+            item = TemplatesStore.instance.getItemTemplate(it)
         }
     }
 
