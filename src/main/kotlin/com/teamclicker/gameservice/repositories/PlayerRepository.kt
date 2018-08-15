@@ -14,9 +14,11 @@ interface PlayerRepository : JpaRepository<PlayerDAO, Long> {
         select case when (count (player) > 0) then true else false end
         from PlayerDAO as player
         where player.nameLc = :nameLc
+        or player.accountId = :accountId
     """
     )
-    fun existsByName(@Param("nameLc") nameLc: String): Boolean
+    fun existsByNameOrAccount(@Param("nameLc") nameLc: String,
+                              @Param("accountId") accountId: Long): Boolean
 
     @Query(
         """

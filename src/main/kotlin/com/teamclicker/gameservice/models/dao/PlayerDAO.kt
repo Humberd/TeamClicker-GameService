@@ -13,7 +13,7 @@ class PlayerDAO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 
-    @Column(name = "accountId", nullable = false)
+    @Column(name = "accountId", nullable = false, unique = true, updatable = false)
     var accountId: Long = 0
 
     @Column(name = "name", nullable = false)

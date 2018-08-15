@@ -4,6 +4,7 @@ import com.teamclicker.gameservice.controllers.helpers.PlayersControllerHelper
 import com.teamclicker.gameservice.controllers.helpers.Users.ALICE
 import com.teamclicker.gameservice.controllers.helpers.Users.ANONYMOUS
 import com.teamclicker.gameservice.controllers.helpers.Users.BOB
+import com.teamclicker.gameservice.controllers.helpers.Users.CHUCK
 import com.teamclicker.gameservice.models.dto.CreatePlayerDTO
 import com.teamclicker.gameservice.models.dto.UpdatePlayerDTO
 import com.teamclicker.gameservice.repositories.PlayerRepository
@@ -67,6 +68,25 @@ internal class PlayersControllerTest {
 
             val body2 = CreatePlayerDTO().also {
                 it.name = "foobar"
+            }
+            playersHelper.create()
+                .with(BOB)
+                .sending(body2)
+                .expectError(410)
+        }
+
+        @Test
+        fun `should not create a player when he already had created a player before`() {
+            val body = CreatePlayerDTO().also {
+                it.name = "Foobar"
+            }
+            playersHelper.create()
+                .with(ALICE)
+                .sending(body)
+                .expectSuccess()
+
+            val body2 = CreatePlayerDTO().also {
+                it.name = "my-next-name"
             }
             playersHelper.create()
                 .with(ALICE)
@@ -147,8 +167,8 @@ internal class PlayersControllerTest {
         @Test
         fun `should read all users`() {
             playersHelper.quickCreate(ALICE)
-            playersHelper.quickCreate(ALICE)
-            playersHelper.quickCreate(ALICE)
+            playersHelper.quickCreate(BOB)
+            playersHelper.quickCreate(CHUCK)
 
             playersHelper.readAll()
                 .with(ALICE)

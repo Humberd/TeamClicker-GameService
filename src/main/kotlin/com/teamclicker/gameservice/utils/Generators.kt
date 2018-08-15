@@ -10,4 +10,6 @@ object Generators {
     fun waveId() = "wave_${randomStringId()}"
 
     fun creatureId() = "creature_${randomStringId()}"
+
+    fun lobbyId() = "lobby_${randomStringId()}"
 }

@@ -48,7 +48,10 @@ class PlayersController(
         @RequestBody @Valid body: CreatePlayerDTO,
         jwtData: JWTData
     ): ResponseEntity<PlayerDTO> {
-        val playerExists = playerRepository.existsByName(body.name.toLowerCase())
+        val playerExists = playerRepository.existsByNameOrAccount(
+            nameLc = body.name.toLowerCase(),
+            accountId = jwtData.accountId
+        )
         if (playerExists) {
             throw EntityAlreadyExistsException("Player with this name already exists")
         }
