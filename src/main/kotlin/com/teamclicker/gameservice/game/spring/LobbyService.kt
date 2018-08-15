@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class LobbyService(
-    private val wsLobbyAPI: WsLobbyAPI,
-    private val lobbyMap: HashMap<String, Lobby> = HashMap()
+    private val wsLobbyAPI: WsLobbyAPI
 ) {
+    private val lobbyMap: HashMap<String, Lobby> = HashMap()
+
     fun create(
         settings: LobbyCreateDTO,
         host: PlayerDAO

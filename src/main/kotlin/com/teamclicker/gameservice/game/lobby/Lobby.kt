@@ -70,7 +70,7 @@ class Lobby(
         for (listener in onDisbandListeners) {
             listener()
         }
-        wsLobbyAPI.sendLobbyDisband(id)
+        wsLobbyAPI.sendLobbyDisbanded(id)
 
     }
 
@@ -99,13 +99,13 @@ class Lobby(
             lobby = this
         ).also {
             players[player.id] = it
-            wsLobbyAPI.sendPlayerAdded(id, it)
+            wsLobbyAPI.sendPlayerAdded(id, it.toDTO())
         }
     }
 
     fun updatePlayer(player: LobbyPlayer) {
         players[player.id] = player.copy()
-        wsLobbyAPI.sendPlayerUpdated(id, player)
+        wsLobbyAPI.sendPlayerUpdated(id, player.toDTO())
     }
 
     fun removePlayer(playerId: Long): LobbyPlayer {

@@ -2,6 +2,7 @@ package com.teamclicker.gameservice.game.lobby
 
 import com.teamclicker.gameservice.game.lobby.LobbyPlayerStatus.*
 import com.teamclicker.gameservice.models.dao.PlayerDAO
+import com.teamclicker.gameservice.models.dto.LobbyPlayerResponseDTO
 
 data class LobbyPlayer(
     val id: Long,
@@ -83,6 +84,11 @@ data class LobbyPlayer(
             }
         }
     }
+
+    fun toDTO() =
+        LobbyPlayerResponseDTO(
+            id, accountId, name, level, status
+        )
 
     companion object {
         fun from(player: PlayerDAO, status: LobbyPlayerStatus, lobby: Lobby) =

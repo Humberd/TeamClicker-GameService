@@ -41,6 +41,23 @@ class LobbyController(
         )
     }
 
+    @PostMapping("/{lobbyId}/join")
+    @Transactional
+    fun join(
+        @PathVariable lobbyId: String,
+        jwtData: JWTData
+    ): ResponseEntity<Void> {
+        val optionalPlayer = playerRepository.findByAccountId(jwtData.accountId)
+        if (!optionalPlayer.isPresent) {
+            throw EntityDoesNotExistException("Player does not exist.")
+        }
+
+        val lobby = lobbyService.get(lobbyId)
+        lobby.join(optionalPlayer.get())
+
+        return ResponseEntity(OK)
+    }
+
     @PostMapping("/{lobbyId}/leave")
     @Transactional
     fun leave(
@@ -57,23 +74,6 @@ class LobbyController(
         lobbyPlayer.leave()
 
         return ResponseEntity(OK)
-    }
-
-    @PostMapping("/{lobbyId}/join")
-    @Transactional
-    fun join(
-        @PathVariable lobbyId: String,
-        jwtData: JWTData
-    ): ResponseEntity<List<LobbyPlayer>> {
-        val optionalPlayer = playerRepository.findByAccountId(jwtData.accountId)
-        if (!optionalPlayer.isPresent) {
-            throw EntityDoesNotExistException("Player does not exist.")
-        }
-
-        val lobby = lobbyService.get(lobbyId)
-        lobby.join(optionalPlayer.get())
-
-        return ResponseEntity.ok(lobby.getAllPlayers())
     }
 
     @PostMapping("/{lobbyId}/invite")
