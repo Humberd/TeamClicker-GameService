@@ -15,7 +15,7 @@ class JWTAuthenticationToken(
     }
 
     override fun getPrincipal(): Any {
-        return ""
+        return jwtData.accountId.toString()
     }
 
 }

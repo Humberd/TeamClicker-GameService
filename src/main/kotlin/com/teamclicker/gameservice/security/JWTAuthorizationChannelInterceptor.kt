@@ -1,7 +1,6 @@
 package com.teamclicker.gameservice.security
 
 import ch.qos.logback.classic.Level
-import com.teamclicker.gameservice.configs.WebSocketConfig
 import com.teamclicker.gameservice.extensions.KLogging
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel

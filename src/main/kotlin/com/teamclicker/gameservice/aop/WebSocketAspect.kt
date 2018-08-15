@@ -16,8 +16,15 @@ import kotlin.reflect.jvm.kotlinFunction
 @Aspect
 @Component
 class WebSocketAspect(
-    val simpleMessagingTemplate: SimpMessagingTemplate
+    private val simpleMessagingTemplate: SimpMessagingTemplate
 ) {
+    /**
+     * Cannot send a message without a body,
+     * so in this case it sends an empty object.
+     */
+    private final val emptyObject = object : Any() {
+        override fun toString() = "EmptyObject"
+    }
 
     @Around("execution(@com.teamclicker.gameservice.aop.WsSendTo * *(..))")
     fun handleMessage(point: ProceedingJoinPoint): Any? {
@@ -25,25 +32,46 @@ class WebSocketAspect(
 
         val methodSignature = point.signature as MethodSignature
         val rawDestinationPath = getDestination(methodSignature)
-        val params = getParams(methodSignature, point.args)
+        val params = getDestinationPathParams(methodSignature, point.args)
 
         val destinationPath = resolveVariables(rawDestinationPath, params)
 
-        val paramPayload = getParamPayload(methodSignature, point.args)
+        val parameterPayload = getPayloadFromMethodParameter(methodSignature, point.args)
         val payload = if (hasResponsePayload(methodSignature)) {
             returnValue
-        } else if (paramPayload.isPresent) {
-            paramPayload.get()
+        } else if (parameterPayload.isPresent) {
+            parameterPayload.get()
         } else {
-            throw Exception("Method must be annotated with @Payload or have one of its parameters annotated by it.")
+            emptyObject
         }
 
-        logger.trace { "Path: $destinationPath. Payload: $payload" }
-        simpleMessagingTemplate.convertAndSend(destinationPath, payload)
+        val userId = getUserId(methodSignature, point.args)
+        if (!userId.isPresent) {
+            logger.trace { "Path: $destinationPath. Payload: $payload" }
+            simpleMessagingTemplate.convertAndSend(destinationPath, payload)
+        } else {
+            logger.trace { "Path: $destinationPath. Payload: $payload. User: ${userId.get()}" }
+            simpleMessagingTemplate.convertAndSendToUser(userId.get().toString(), destinationPath, payload)
+        }
+
         return returnValue
     }
 
-    private fun <T> getParamPayload(methodSignature: MethodSignature, args: Array<T>): Optional<T> {
+    fun <T> getUserId(methodSignature: MethodSignature, args: Array<T>): Optional<T> {
+        val valueParameters = methodSignature.method.kotlinFunction!!.valueParameters
+
+        for (i in 0..valueParameters.size - 1) {
+            if (valueParameters[i].findAnnotation<User>() === null) {
+                continue
+            }
+
+            return Optional.of(args[i])
+        }
+
+        return Optional.empty()
+    }
+
+    fun <T> getPayloadFromMethodParameter(methodSignature: MethodSignature, args: Array<T>): Optional<T> {
         val valueParameters = methodSignature.method.kotlinFunction!!.valueParameters
 
         for (i in 0..valueParameters.size - 1) {
@@ -65,7 +93,10 @@ class WebSocketAspect(
         return methodSignature.method.getAnnotation(WsSendTo::class.java).value
     }
 
-    fun getParams(methodSignature: MethodSignature, args: Array<Any>): Map<String, Any> {
+    /**
+     * Returns map of variable names to its values
+     */
+    fun getDestinationPathParams(methodSignature: MethodSignature, args: Array<Any>): Map<String, Any> {
         val valueParameters = methodSignature.method.kotlinFunction!!.valueParameters
 
         return combineLists(valueParameters, args.toList())
@@ -89,6 +120,9 @@ class WebSocketAspect(
             .toMap()
     }
 
+    /**
+     * Replaces [path] variables surrounded with `{}` with values in [variables]
+     */
     fun resolveVariables(path: String, variables: Map<String, Any>): String {
         var newPath = path
         for ((key, value) in variables) {

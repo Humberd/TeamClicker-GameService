@@ -21,7 +21,7 @@ class WebSocketConfig(
     private val jwtAuthorizationChannelInterceptor: JWTAuthorizationChannelInterceptor
 ) : AbstractSecurityWebSocketMessageBrokerConfigurer() {
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
-        registry.enableSimpleBroker("/topic")
+        registry.enableSimpleBroker("/topic", "/queue")
         registry.setApplicationDestinationPrefixes("/app")
     }
 
