@@ -2,6 +2,7 @@ package com.teamclicker.gameservice.game
 
 import com.google.gson.Gson
 import com.teamclicker.gameservice.game.spring.TemplatesResolver
+import com.teamclicker.gameservice.game.spring.TemplatesStore
 import com.teamclicker.gameservice.game.templates.CreatureTemplate
 import com.teamclicker.gameservice.game.templates.ItemTemplate
 import org.junit.jupiter.api.BeforeEach
@@ -23,15 +24,17 @@ internal class TemplatesResolverTest {
     lateinit var gson: Gson
 
     lateinit var templatesResolver: TemplatesResolver
+    lateinit var templatesStore: TemplatesStore
 
     @BeforeEach
     fun setUp() {
-        templatesResolver = TemplatesResolver(resourceLoader, gson)
+        templatesStore = TemplatesStore()
+        templatesResolver = TemplatesResolver(resourceLoader, gson, templatesStore)
     }
 
     @Test
     fun `should read template items`() {
-        val results = templatesResolver.itemTemplates
+        val results = templatesStore.itemTemplates
 
         assert(results.isNotEmpty())
         assert(results.entries.first().value is ItemTemplate)
@@ -39,7 +42,7 @@ internal class TemplatesResolverTest {
 
     @Test
     fun `should read template creatures`() {
-        val results = templatesResolver.creatureTemplates
+        val results = templatesStore.creatureTemplates
 
         assert(results.isNotEmpty())
         assert(results.entries.first().value is CreatureTemplate)

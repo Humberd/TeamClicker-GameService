@@ -130,7 +130,7 @@ class PlayersController(
         @PathVariable playerId: Long,
         jwtData: JWTData
     ): ResponseEntity<Void> {
-        val player = playerRepository.findBy(
+        val player = playerRepository.findByPlayerIdAndAccountId(
             playerId = playerId,
             accountId = jwtData.accountId
         )

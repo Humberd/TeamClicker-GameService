@@ -6,6 +6,7 @@ import com.teamclicker.gameservice.game.lobby.LobbyStatus.PUBLIC
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 
 class Lobby(
+    val id: String,
     settings: LobbySettings,
     initialHost: PlayerDAO
 ) {
@@ -14,7 +15,7 @@ class Lobby(
         initialHost.id to LobbyPlayer.from(initialHost, HOST, this)
     )
 
-    val playersMap: HashMap<Long, LobbyPlayer>
+    private val players: HashMap<Long, LobbyPlayer>
         get() {
             if (isDisbanded) {
                 throw LobbyException("Lobby is disbanded.")
@@ -28,14 +29,10 @@ class Lobby(
     }
 
     fun join(player: PlayerDAO) {
-        val potentialLobbyPlayer = playersMap[player.id]
+        val potentialLobbyPlayer = getPlayer(player.id)
 
         when (settings.status) {
             PRIVATE -> {
-                if (potentialLobbyPlayer === null) {
-                    throw LobbyException("Cannot join. Player not found")
-                }
-
                 if (potentialLobbyPlayer.status !== INVITED) {
                     throw LobbyException("Cannot join. Player not invited.")
                 }
@@ -43,26 +40,40 @@ class Lobby(
                 potentialLobbyPlayer.status = MEMBER
             }
             PUBLIC -> {
-                when (potentialLobbyPlayer?.status) {
+                when (potentialLobbyPlayer.status) {
                     HOST,
                     MEMBER -> throw LobbyException("Cannot join. Player already in the lobby.")
                     LEFT,
                     INVITED -> {
                         potentialLobbyPlayer.status = MEMBER
-                        return
                     }
                 }
-
-                addPlayer(player, MEMBER)
             }
+        }
+
+        addPlayer(player, MEMBER)
+    }
+
+    fun getPlayer(playerId: Long): LobbyPlayer {
+        players[playerId]?.let { return it }
+        throw LobbyException("Player not found.")
+    }
+
+    fun removePlayer(playerId: Long) {
+        if (players.remove(playerId) === null) {
+            throw LobbyException("Cannot remove not existing player.")
         }
     }
 
-    internal fun addPlayer(player: PlayerDAO, status: LobbyPlayerStatus) {
-        playersMap[player.id] = LobbyPlayer.from(
+    fun findPlayers(predicate: (Map.Entry<Long, LobbyPlayer>) -> Boolean) = players.filter(predicate)
+
+    internal fun addPlayer(player: PlayerDAO, status: LobbyPlayerStatus): LobbyPlayer {
+        return LobbyPlayer.from(
             player = player,
             status = status,
             lobby = this
-        )
+        ).also {
+            players[player.id] = it
+        }
     }
 }

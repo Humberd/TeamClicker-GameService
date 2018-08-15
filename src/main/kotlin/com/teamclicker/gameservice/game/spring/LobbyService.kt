@@ -4,36 +4,39 @@ import com.teamclicker.gameservice.game.lobby.Lobby
 import com.teamclicker.gameservice.game.lobby.LobbyException
 import com.teamclicker.gameservice.game.lobby.LobbySettings
 import com.teamclicker.gameservice.models.dao.PlayerDAO
+import com.teamclicker.gameservice.models.dto.LobbyCreateDTO
+import com.teamclicker.gameservice.utils.Generators
 import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
 class LobbyService {
-    private val lobbyMap = HashMap<Long, Lobby>()
+    private val lobbyMap = HashMap<String, Lobby>()
 
-    fun createLobby(
-        settings: LobbySettings,
+    fun create(
+        settings: LobbyCreateDTO,
         host: PlayerDAO
     ): Lobby {
-        val id = generateId()
-        val lobby = Lobby(settings.copy(id = id), host)
+        val lobby = Lobby(
+            id = Generators.lobbyId(),
+            settings = LobbySettings(
+                status = settings.status
+            ),
+            initialHost = host
+        )
 
-        lobbyMap.put(id, lobby)
+        lobbyMap.put(lobby.id, lobby)
         return lobby
     }
 
-    fun removeLobby(lobbyId: Long) {
+    fun remove(lobbyId: String) {
         lobbyMap.remove(lobbyId)
     }
 
-    fun getLobby(lobbyId: Long): Lobby {
+    fun get(lobbyId: String): Lobby {
         lobbyMap.get(lobbyId)?.let { return it }
         throw LobbyException("Lobby doesn't exist")
     }
 
-    fun generateId() = ++idCounter
-
-    companion object : KLogging() {
-        var idCounter: Long = 0
-    }
+    companion object : KLogging()
 }

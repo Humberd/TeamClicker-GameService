@@ -17,8 +17,10 @@ interface PlayerRepository : JpaRepository<PlayerDAO, Long> {
         or player.accountId = :accountId
     """
     )
-    fun existsByNameOrAccount(@Param("nameLc") nameLc: String,
-                              @Param("accountId") accountId: Long): Boolean
+    fun existsByNameOrAccount(
+        @Param("nameLc") nameLc: String,
+        @Param("accountId") accountId: Long
+    ): Boolean
 
     @Query(
         """
@@ -41,8 +43,19 @@ interface PlayerRepository : JpaRepository<PlayerDAO, Long> {
         and player.accountId = :accountId
     """
     )
-    fun findBy(
+    fun findByPlayerIdAndAccountId(
         @Param("playerId") playerId: Long,
+        @Param("accountId") accountId: Long
+    ): Optional<PlayerDAO>
+
+    @Query(
+        """
+        select player
+        from PlayerDAO as player
+        where player.accountId = :accountId
+    """
+    )
+    fun findByAccountId(
         @Param("accountId") accountId: Long
     ): Optional<PlayerDAO>
 
@@ -53,5 +66,7 @@ interface PlayerRepository : JpaRepository<PlayerDAO, Long> {
         where player.nameLc = :nameLc
     """
     )
-    fun findByName(@Param("nameLc") nameLc: String): Optional<PlayerDAO>
+    fun findByName(
+        @Param("nameLc") nameLc: String
+    ): Optional<PlayerDAO>
 }

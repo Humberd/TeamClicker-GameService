@@ -17,13 +17,12 @@ class InvalidParametersException(message: String) : RuntimeException(message)
 class InvalidCredentialsException(message: String) : RuntimeException(message)
 
 @ResponseBody
-@ResponseStatus(HttpStatus.GONE) // 410
-class EntityAlreadyExistsException(message: String) : RuntimeException(message)
-
-@ResponseBody
 @ResponseStatus(HttpStatus.NOT_FOUND) // 404
 class EntityDoesNotExistException(message: String) : RuntimeException(message)
 
+@ResponseBody
+@ResponseStatus(HttpStatus.GONE) // 410
+class EntityAlreadyExistsException(message: String) : RuntimeException(message)
 
 @ResponseBody
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500

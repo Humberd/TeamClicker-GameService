@@ -12,35 +12,27 @@ class LobbyPlayer(
 ) {
     fun invite(player: PlayerDAO) {
         if (!status.canInvite) {
-            throw LobbyException("Cannot invite. Insufficient permissions.")
+            throw LobbyException("Cannot invite. Insufficient permissions. $status")
         }
 
-        val potentialPlayerInLobby = lobby.playersMap[player.id]
+        val potentialPlayerInLobby = lobby.getPlayer(player.id)
 
-        when (potentialPlayerInLobby?.status) {
+        when (potentialPlayerInLobby.status) {
             HOST,
             MEMBER -> throw LobbyException("Cannot invite. Player already in lobby.")
             INVITED -> throw LobbyException("Cannot invite. Player already invited.")
             LEFT -> potentialPlayerInLobby.status = INVITED
         }
 
-        lobby.playersMap[123] = from(
-            player = player,
-            status = INVITED,
-            lobby = lobby
-        )
+        lobby.addPlayer(player, INVITED)
     }
 
     fun removeFromInvites(playerId: Long) {
         if (!status.canInvite) {
-            throw LobbyException("Cannot remove from invites. Insufficient permissions.")
+            throw LobbyException("Cannot remove from invites. Insufficient permissions. $status")
         }
 
-        val potentialPlayerInLobby = lobby.playersMap[playerId]
-
-        if (potentialPlayerInLobby === null) {
-            throw LobbyException("Cannot remove from invites. Player not found.")
-        }
+        val potentialPlayerInLobby = lobby.getPlayer(playerId)
 
         when (potentialPlayerInLobby.status) {
             HOST,
@@ -48,22 +40,24 @@ class LobbyPlayer(
             LEFT -> throw LobbyException("Cannot remove from invites. Player already left.")
             INVITED -> {
                 potentialPlayerInLobby.status = LEFT
-                lobby.playersMap.remove(playerId)
+                lobby.removePlayer(playerId)
             }
         }
     }
 
     fun leave() {
         if (!status.canLeave) {
-            throw LobbyException("Cannot leave. Insufficient permissions.")
+            throw LobbyException("Cannot leave. Insufficient permissions. $status")
         }
 
         val previousStatus = status
-        lobby.playersMap.remove(id)
+        lobby.removePlayer(id)
         status = LEFT
 
+        /* Trying to pass a HOST rights */
         if (previousStatus === HOST) {
-            val members = lobby.playersMap.filter { it.value.status === MEMBER }
+            val members = lobby
+                .findPlayers { it.value.status === MEMBER }
                 .map { it.value }
 
             if (members.isEmpty()) {
@@ -81,22 +75,18 @@ class LobbyPlayer(
         }
 
         if (!status.canKick) {
-            throw LobbyException("Cannot kick. Insufficient permissions.")
+            throw LobbyException("Cannot kick. Insufficient permissions. $status")
         }
 
-        val potentialPlayerInLobby = lobby.playersMap[playerId]
-
-        if (potentialPlayerInLobby === null) {
-            throw LobbyException("Cannot kick. Player not found.")
-        }
+        val potentialPlayerInLobby = lobby.getPlayer(playerId)
 
         when (potentialPlayerInLobby.status) {
             LEFT -> throw LobbyException("Cannot kick. Player already left.")
             INVITED -> throw LobbyException("Cannot kick invited player.")
-            HOST,
+            HOST -> throw LobbyException("Cannot kick the HOST.")
             MEMBER -> {
                 potentialPlayerInLobby.status = LEFT
-                lobby.playersMap.remove(playerId)
+                lobby.removePlayer(playerId)
             }
         }
     }
