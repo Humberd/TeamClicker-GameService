@@ -2,6 +2,7 @@ package com.teamclicker.gameservice.controllers.http
 
 import com.teamclicker.gameservice.exceptions.EntityDoesNotExistException
 import com.teamclicker.gameservice.extensions.KLogging
+import com.teamclicker.gameservice.game.lobby.LobbyPlayer
 import com.teamclicker.gameservice.game.spring.LobbyService
 import com.teamclicker.gameservice.models.dto.*
 import com.teamclicker.gameservice.repositories.PlayerRepository
@@ -63,7 +64,7 @@ class LobbyController(
     fun join(
         @PathVariable lobbyId: String,
         jwtData: JWTData
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<List<LobbyPlayer>> {
         val optionalPlayer = playerRepository.findByAccountId(jwtData.accountId)
         if (!optionalPlayer.isPresent) {
             throw EntityDoesNotExistException("Player does not exist.")
@@ -72,7 +73,7 @@ class LobbyController(
         val lobby = lobbyService.get(lobbyId)
         lobby.join(optionalPlayer.get())
 
-        return ResponseEntity(OK)
+        return ResponseEntity.ok(lobby.getAllPlayers())
     }
 
     @PostMapping("/{lobbyId}/invite")

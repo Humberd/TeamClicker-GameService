@@ -10,9 +10,10 @@ import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
-class LobbyService {
-    private val lobbyMap = HashMap<String, Lobby>()
-
+class LobbyService(
+    private val wsLobbyAPI: WsLobbyAPI,
+    private val lobbyMap: HashMap<String, Lobby> = HashMap()
+) {
     fun create(
         settings: LobbyCreateDTO,
         host: PlayerDAO
@@ -22,8 +23,12 @@ class LobbyService {
             settings = LobbySettings(
                 status = settings.status
             ),
-            initialHost = host
+            initialHost = host,
+            wsLobbyAPI = wsLobbyAPI
         )
+        lobby.onDisband {
+            remove(lobby.id)
+        }
 
         lobbyMap.put(lobby.id, lobby)
         return lobby

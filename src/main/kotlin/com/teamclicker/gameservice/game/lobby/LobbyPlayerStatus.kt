@@ -7,6 +7,5 @@ enum class LobbyPlayerStatus(
 ) {
     HOST(true, true, true),
     MEMBER(false, true, false),
-    LEFT(false, false, false),
     INVITED(false, false, false)
 }

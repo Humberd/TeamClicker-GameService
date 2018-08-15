@@ -3,8 +3,9 @@ package com.teamclicker.gameservice.game.lobby
 import com.teamclicker.gameservice.game.lobby.LobbyPlayerStatus.*
 import com.teamclicker.gameservice.models.dao.PlayerDAO
 
-class LobbyPlayer(
+data class LobbyPlayer(
     val id: Long,
+    val accountId: Long,
     val name: String,
     val level: Int,
     var status: LobbyPlayerStatus,
@@ -15,13 +16,8 @@ class LobbyPlayer(
             throw LobbyException("Cannot invite. Insufficient permissions. $status")
         }
 
-        val potentialPlayerInLobby = lobby.getPlayer(player.id)
-
-        when (potentialPlayerInLobby.status) {
-            HOST,
-            MEMBER -> throw LobbyException("Cannot invite. Player already in lobby.")
-            INVITED -> throw LobbyException("Cannot invite. Player already invited.")
-            LEFT -> potentialPlayerInLobby.status = INVITED
+        if (lobby.hasPlayer(player.id)) {
+            throw LobbyException("Player already invited or in the lobby.")
         }
 
         lobby.addPlayer(player, INVITED)
@@ -37,9 +33,7 @@ class LobbyPlayer(
         when (potentialPlayerInLobby.status) {
             HOST,
             MEMBER -> throw LobbyException("Cannot remove from invites. Player already in lobby.")
-            LEFT -> throw LobbyException("Cannot remove from invites. Player already left.")
             INVITED -> {
-                potentialPlayerInLobby.status = LEFT
                 lobby.removePlayer(playerId)
             }
         }
@@ -50,12 +44,10 @@ class LobbyPlayer(
             throw LobbyException("Cannot leave. Insufficient permissions. $status")
         }
 
-        val previousStatus = status
         lobby.removePlayer(id)
-        status = LEFT
 
-        /* Trying to pass a HOST rights */
-        if (previousStatus === HOST) {
+        /* Trying to pass HOST rights */
+        if (status === HOST) {
             val members = lobby
                 .findPlayers { it.value.status === MEMBER }
                 .map { it.value }
@@ -65,7 +57,10 @@ class LobbyPlayer(
                 return
             }
 
-            members.first().status = HOST
+            val member = members.first().also {
+                it.status = HOST
+            }
+            lobby.updatePlayer(member)
         }
     }
 
@@ -81,11 +76,9 @@ class LobbyPlayer(
         val potentialPlayerInLobby = lobby.getPlayer(playerId)
 
         when (potentialPlayerInLobby.status) {
-            LEFT -> throw LobbyException("Cannot kick. Player already left.")
             INVITED -> throw LobbyException("Cannot kick invited player.")
             HOST -> throw LobbyException("Cannot kick the HOST.")
             MEMBER -> {
-                potentialPlayerInLobby.status = LEFT
                 lobby.removePlayer(playerId)
             }
         }
@@ -95,6 +88,7 @@ class LobbyPlayer(
         fun from(player: PlayerDAO, status: LobbyPlayerStatus, lobby: Lobby) =
             LobbyPlayer(
                 id = player.id,
+                accountId = player.accountId,
                 name = player.name,
                 level = player.stats.level,
                 status = status,
