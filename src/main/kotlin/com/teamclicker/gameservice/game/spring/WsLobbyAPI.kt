@@ -13,7 +13,7 @@ class WsLobbyAPI {
     fun sendPlayerAdded(@Param lobbyId: String, @Payload lobbyPlayer: LobbyPlayerResponseDTO) {
     }
 
-    @WsSendTo("/topic/lobbies/{lobbyId}/all-players")
+    @WsSendTo("/user/lobbies/{lobbyId}/all-players")
     fun sendAllPlayers(@Param lobbyId: String, @Payload lobbyPlayers: List<LobbyPlayerResponseDTO>) {
     }
 

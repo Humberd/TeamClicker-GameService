@@ -3,6 +3,7 @@ package com.teamclicker.gameservice.testConfig.endpointBuilders
 import com.google.gson.*
 import com.teamclicker.gameservice.Constants.JWT_HEADER_NAME
 import com.teamclicker.gameservice.Constants.JWT_TOKEN_PREFIX
+import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.testConfig.models.SpringErrorResponse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -94,9 +95,14 @@ abstract class HttpEndpointBuilder<
 
     private fun <T> expect(type: Type, statusCode: Int?, callback: (ResponseEntity<T>) -> Unit): ResponseEntity<T> {
         val httpEntity = HttpEntity(body, headers)
-        val response = build<T>(httpEntity, type)
+        val (response, rawResponse) = build<T>(httpEntity, type)
         statusCode?.let {
-            assertEquals(it, response.statusCodeValue)
+            assertEquals(it, response.statusCodeValue) {
+                if (response.body !is Void) {
+                    return@assertEquals response.body.toString()
+                }
+                return@assertEquals rawResponse
+            }
         }
         // todo: check returning body type
 //        if (type.typeName !== Void::class.java.typeName) {
@@ -108,7 +114,7 @@ abstract class HttpEndpointBuilder<
         return response
     }
 
-    private fun <T> build(httpEntity: HttpEntity<Body>, responseBodyType: Type): ResponseEntity<T> {
+    private fun <T> build(httpEntity: HttpEntity<Body>, responseBodyType: Type): Pair<ResponseEntity<T>, String?> {
         val urlBuilder = UriComponentsBuilder.fromPath(url)
             .queryParams(queryParams)
 
@@ -120,13 +126,14 @@ abstract class HttpEndpointBuilder<
             pathVariables
         )
 
+
         val newBody = gson.fromJson<T>(response.body, responseBodyType)
         val newResponse = ResponseEntity(newBody, response.headers, response.statusCode)
 
-        return newResponse
+        return newResponse.to(response.body)
     }
 
-    companion object {
+    companion object : KLogging() {
 
         var gson =
             GsonBuilder().registerTypeAdapter(LocalDateTime::class.java, object : JsonDeserializer<LocalDateTime> {

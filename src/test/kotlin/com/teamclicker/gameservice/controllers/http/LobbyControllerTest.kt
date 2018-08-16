@@ -6,28 +6,25 @@ import com.teamclicker.gameservice.controllers.helpers.Users.ALICE
 import com.teamclicker.gameservice.controllers.helpers.Users.BOB
 import com.teamclicker.gameservice.extensions.KLogging
 import com.teamclicker.gameservice.game.lobby.Lobby
+import com.teamclicker.gameservice.game.lobby.LobbyStatus.PRIVATE
 import com.teamclicker.gameservice.game.lobby.LobbyStatus.PUBLIC
 import com.teamclicker.gameservice.game.spring.LobbyService
 import com.teamclicker.gameservice.models.dto.LobbyCreateDTO
-import com.teamclicker.gameservice.models.dto.LobbyPlayerResponseDTO
+import com.teamclicker.gameservice.models.dto.LobbyInviteDTO
 import com.teamclicker.gameservice.repositories.PlayerRepository
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import com.teamclicker.gameservice.testConfig.endpointBuilders.Unsubscribeable
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.util.ReflectionTestUtils
-import java.util.concurrent.LinkedBlockingDeque
-import java.util.concurrent.TimeUnit.SECONDS
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class LobbyControllerTest {
+    val subscriptions = ArrayList<Unsubscribeable>()
 
     @Autowired
     lateinit var playerRepository: PlayerRepository
@@ -45,6 +42,14 @@ internal class LobbyControllerTest {
         playerRepository.deleteAll()
         lobbyMap.clear()
         ReflectionTestUtils.setField(lobbyService, "lobbyMap", lobbyMap)
+    }
+
+    @AfterEach
+    fun cleanUp() {
+        for (subscription in subscriptions) {
+            subscription.unsubscribe()
+        }
+        subscriptions.clear()
     }
 
     @Nested
@@ -68,33 +73,103 @@ internal class LobbyControllerTest {
     @Nested
     inner class Join {
         @Test
-        fun `should join public lobby`() {
-            val messageQueue = LinkedBlockingDeque<LobbyPlayerResponseDTO>()
-
+        fun `should join PUBLIC lobby`() {
             playersHelper.quickCreate(ALICE)
             playersHelper.quickCreate(BOB)
 
+            /* ALICE creates a lobby */
             val lobbyId = lobbyHelper.create()
                 .with(ALICE)
                 .sending(LobbyCreateDTO(status = PUBLIC))
                 .expectSuccess()
                 .body!!.lobbyId
 
-            lobbyHelper.onPlayerAdded()
-                .with(ALICE)
-                .lobbyId(lobbyId)
-                .subscribe {
-                    logger.info { "Player added: $it" }
-                    messageQueue.add(it)
-                }
+            /* ALICE subscribes to new players */
+            val alicePlayerAddedSub =
+                lobbyHelper.onPlayerAdded()
+                    .with(ALICE)
+                    .lobbyId(lobbyId)
+                    .subscribe().also {
+                        subscriptions.add(it)
+                    }
 
+            /* BOB joins ALICE'S lobby */
             lobbyHelper.join()
                 .with(BOB)
                 .lobbyId(lobbyId)
                 .expectSuccess()
 
-            assertNotNull(messageQueue.pollFirst(1, SECONDS))
+            alicePlayerAddedSub.expectEvent()
         }
+
+        @Test
+        fun `should not join PRIVATE lobby without invitation`() {
+            playersHelper.quickCreate(ALICE)
+            playersHelper.quickCreate(BOB)
+
+            /* ALICE creates a lobby */
+            val lobbyId = lobbyHelper.create()
+                .with(ALICE)
+                .sending(LobbyCreateDTO(status = PRIVATE))
+                .expectSuccess()
+                .body!!.lobbyId
+
+            /* ALICE subscribes to new players */
+            val alicePlayerAddedSub =
+                lobbyHelper.onPlayerAdded()
+                    .with(ALICE)
+                    .lobbyId(lobbyId)
+                    .subscribe().also {
+                        subscriptions.add(it)
+                    }
+
+            /* BOB joins ALICE'S lobby */
+            lobbyHelper.join()
+                .with(BOB)
+                .lobbyId(lobbyId)
+                .expectError(423)
+
+            alicePlayerAddedSub.expectNoEvent()
+        }
+
+        @Test
+        fun `should join PRIVATE lobby with invitation`() {
+            playersHelper.quickCreate(ALICE)
+            val bobPlayer = playersHelper.quickCreate(BOB)
+
+            /* ALICE creates a lobby */
+            val lobbyId = lobbyHelper.create()
+                .with(ALICE)
+                .sending(LobbyCreateDTO(status = PRIVATE))
+                .expectSuccess()
+                .body!!.lobbyId
+
+            /* ALICE subscribes to new players */
+            val alicePlayerAddedSub =
+                lobbyHelper.onPlayerAdded()
+                    .with(ALICE)
+                    .lobbyId(lobbyId)
+                    .subscribe().also {
+                        subscriptions.add(it)
+                    }
+
+            /* ALICE invites BOB */
+            lobbyHelper.invite()
+                .with(ALICE)
+                .lobbyId(lobbyId)
+                .sending(LobbyInviteDTO(bobPlayer.id))
+                .expectSuccess()
+
+            /* BOB joins ALICE'S lobby */
+            lobbyHelper.join()
+                .with(BOB)
+                .lobbyId(lobbyId)
+                .expectSuccess()
+
+            alicePlayerAddedSub.expectEvent()
+        }
+
+        // TODO: player can't be in more than 1 lobby
     }
 
     companion object : KLogging()
